@@ -214,11 +214,11 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         try:
             sql = "INSERT INTO `wetherdate`.`all_log` (area, DInum, IDnum, frame, datetime, date) VALUES (%s,%s,%s,%s,%s,%s)"
             val = (str_line[2] , str_line[7] , str_line[8],str_line[10],time,line)
-            mycursor.execute(sql, val)
-            # 调用
-            # sql='select * from zljob'
-            # 执行sql语句
-            conn.commit()
+            if self.check_datetime():
+                # 执行sql语句
+                mycursor.execute(sql, val)
+                #提交到数据库
+                conn.commit()
 
         except Exception:
             # 发生错误时回滚
@@ -274,11 +274,13 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
                 self.textEdit.append('未找到文件，请放到根目录下')
 
     def Printinfo_picture(self):
+
         # 以0.2为间隔均匀采样
         t = np.arange(0., 5., 0.2)
         # 'r--':红色的需要;'bs':蓝色方块;'g^':绿色三角
         plt.plot(t, t, 'r--', t, t ** 2, 'bs', t, t ** 3, 'g^')
         plt.show()
+
     def DB_Search(self):
         beg_time = self.Read_dd()
         end_time = self.Read_dd_2()
@@ -291,9 +293,12 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         mycursor = mydb.cursor()
         sql = "SELECT * FROM all_log WHERE datetime >= '%s' and datetime <='%s'"%(beg_time, end_time)
         mycursor.execute(sql)
-        myresult = mycursor.fetchall()  # fetchall() 获取所有记录
+        results = mycursor.fetchall()  # fetchall() 获取所有记录
+        date = []
+        for row in results:
+            date = date + [row[6]]
 
-        self.textEdit_2.append(str(myresult))
+        self.textEdit_2.append(str(date))
 
 
 if __name__ == "__main__":
