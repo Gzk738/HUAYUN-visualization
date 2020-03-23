@@ -7,7 +7,11 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1ZBtWQcZOxnLoIo9WabernT4Zbv" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -95,6 +99,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="312" y="88" key="#Notifications" timestamp="1584947588241">
+      <screen x="0" y="0" width="1440" height="860" />
+    </state>
+    <state x="312" y="88" key="#Notifications/-1920.-238.1280.693/0.0.1440.860@0.0.1440.860" timestamp="1584947588241" />
     <state x="450" y="46" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1584426831893">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
