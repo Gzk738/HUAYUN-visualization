@@ -1,4 +1,13 @@
 # -*- coding:utf-8 -*-
+'''
+@File    :   $main.py
+@Contact :   798412226@qq.com
+@License :   (C)Copyright 2020-2025, HUAYUN-NLPR-CASIA
+
+@Modify Time      @Author    @Version    @Desciption
+------------      -------    --------    -----------
+$2020.3.25         guozikun     1.0         None
+'''
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from untitled import Ui_MainWindow
 import os, time, sys, re
@@ -9,13 +18,29 @@ import numpy as np
 import pymysql
 import globalvar as gl
 
-gl._init() #初始化全局变量管理模块
-gl.set_value('globalvar_flog', 0)#引用全局变量管理模块 globalvar_flog 作为读入天气数据文件中的日志条数的变量
-flog = gl.get_value('globalvar_flog')
+def config_INIT_():
+    gl._init()  # 初始化全局变量管理模块
+    gl.set_value('globalvar_flog', 0)  # 引用全局变量管理模块 globalvar_flog 作为读入天气数据文件中的日志条数的变量
+    flog = gl.get_value('globalvar_flog')
+
+    file = open('config.cfg', mode='r+', encoding='UTF-8')
+    str_config = file.read()
+    gl.set_value('globalvar_config', str_config)
+    print(gl.get_value('globalvar_config'))
+    file.close()
+
+
+
+
+def App__RUN__():
+    app = QApplication(sys.argv)
+    main = Main()
+    main.show()
+    sys.exit(app.exec_())
 
 
 class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口，这里会不同
-    # class Main(QWidget,Ui_Form):
+        # class Main(QWidget,Ui_Form):
 
     def __init__(self):
         super(Main, self).__init__()
@@ -206,6 +231,13 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         return MessageLine
 
     def Creat_Table(self, str_line, mycursor, conn, Table_Name):
+        """
+        :param str_line:
+        :param mycursor:
+        :param conn:
+        :param Table_Name:
+        :return:
+        """
         check = mycursor.execute("show table status like %s", Table_Name)
         conn.commit()
         if check == 0:
@@ -219,16 +251,17 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
 
         return
     def Table_to_sql(self, sql, Table_Name):
+        """
+        :param sql:
+        :param Table_Name:
+        :return: void
+        """
         sql = sql.replace('TABLE_NAME', Table_Name, 1)
         return sql
 
-    def save_SQL_asline(self, line , str_line):
+    def save_SQL_asline(self, line , str_line, mycursor, conn):
         global flog
         Table_Name = str(str_line[2] + '_' + str_line[7] + '_' + str_line[8] + '_' + str_line[10])
-        # 打开数据库连接-填入你Mysql的账号密码和端口
-        conn = pymysql.connect('localhost', 'root', '2667885', "wetherdate", charset='utf8')
-        # 使用 cursor() 方法创建一个游标对象 cursor
-        mycursor = conn.cursor()
         time = datetime.datetime.strptime(str(str_line[9]), '%Y%m%d%H%M%S')
         self.Creat_Table(str_line, mycursor, conn, Table_Name)
         sql = """INSERT INTO `wetherdate`.`TABLE_NAME` ( datetime, date) VALUES (%s, %s)"""
@@ -241,14 +274,18 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
             conn.commit()
             flog = flog +1
             print(flog)
-            mycursor.close()
-            conn.close()
         except:
-            print('ERROR')
-            mycursor.close()
-            conn.close()
+            flog = flog + 1
+            self.textEdit_2.append('ERROR' + str(flog))
+            print('ERROR'+str(flog))
 
     def Save_datebase(self):
+        """
+        This is the trigger function of the button (stored in the database) on the interface
+        return : void
+        parameters : No parameters required
+        Author : guozikun
+        """
         #dd_inter = datetime.datetime.strptime(str(self.Read_combox_3()), "%S")
         dd_inter = self.Read_combox_3()
         global dd
@@ -270,6 +307,10 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         else:
             if os.path.isfile('ReceivedTofile-TCPSERVER-2019_11_5_10-04-51.DAT'):
                 self.textEdit_2.append("验证文件成功")
+                # 打开数据库连接-填入你Mysql的账号密码和端口
+                conn = pymysql.connect('localhost', 'root', '2667885', "wetherdate", charset='utf8')
+                # 使用 cursor() 方法创建一个游标对象 cursor
+                mycursor = conn.cursor()
                 file = open('ReceivedTofile-TCPSERVER-2019_11_5_10-04-51.DAT', mode='r+', encoding='UTF-8')
                 flog = 0
                 for line in file.readlines() :
@@ -279,12 +320,13 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
                             if self.Str_Compare(str_line):
                                 dd_jure = self.Handle_dd_jure(str_line)
                                 if ( self.ID_ckeck(str_line )) and (self.DI_check(str_line )) and (self.frame_check(str_line)) and (self.StatNum_check(str_line )):
-                                    self.save_SQL_asline(line , str_line)
+                                    self.save_SQL_asline(line, str_line, mycursor, conn)
 
                             else:
                                 break
                 file.close()
-                self.textEdit_2.append(str(flog))
+                mycursor.close()
+                conn.close()
 
             else:
                 self.textEdit.append('未找到文件，请放到根目录下')
@@ -319,9 +361,9 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         self.textEdit_2.append(str(date))
 
 
+
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    main = Main()
-    main.show()
-    sys.exit(app.exec_())
-    #66666666666
+
+    config_INIT_()
+    App__RUN__()
+
