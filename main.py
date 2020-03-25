@@ -203,28 +203,37 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
 
         return MessageLine
 
+    def Creat_Table(self, str_line, mycursor, conn, Table_Name):
+        check = mycursor.execute("show table status like %s", Table_Name)
+        conn.commit()
+        if check == 0:
+            sql = """CREATE TABLE `wetherdate`.`%s` (
+            `id` INT NOT NULL AUTO_INCREMENT,
+            `datetime` DATETIME(1) NOT NULL,
+            `date` TEXT(1000) NOT NULL,
+            PRIMARY KEY (`id`),
+            UNIQUE INDEX `datetime_UNIQUE` (`datetime` ASC) VISIBLE);"""%(Table_Name)
+            mycursor.execute(sql)
+
+        return
         
     def save_SQL_asline(self, line , str_line):
+        global flog
+        Table_Name = str(str_line[2] + '_' + str_line[7] + '_' + str_line[8] + '_' + str_line[10])
         # 打开数据库连接-填入你Mysql的账号密码和端口
         conn = pymysql.connect('localhost', 'root', '2667885', "wetherdate", charset='utf8')
         # 使用 cursor() 方法创建一个游标对象 cursor
         mycursor = conn.cursor()
         time = datetime.datetime.strptime(str(str_line[9]), '%Y%m%d%H%M%S')
-
-        try:
-            sql = "INSERT INTO `wetherdate`.`all_log` (area, DInum, IDnum, frame, datetime, date) VALUES (%s,%s,%s,%s,%s,%s)"
-            val = (str_line[2] , str_line[7] , str_line[8],str_line[10],time,line)
-            if self.check_datetime():
-                # 执行sql语句
-                mycursor.execute(sql, val)
-                #提交到数据库
-                conn.commit()
-
-        except Exception:
-            # 发生错误时回滚
-            conn.rollback()
-            print('发生异常')
-            # 关闭数据库连接
+        self.Creat_Table(str_line, mycursor, conn, Table_Name)
+        sql = """INSERT INTO `wetherdate`.`57495_yiip_000_001` ( datetime, date) VALUES (%s, %s)"""
+        val = (time, line)
+        # 执行sql语句
+        mycursor.execute(sql, val)
+        #提交到数据库
+        conn.commit()
+        flog = flog +1
+        print(flog)
         mycursor.close()
         conn.close()
 
@@ -238,7 +247,6 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         global flog
         global dd_jurefirst
         global dd_first
-        global fiog
         global End_identification
         End_identification = 0
         dd = self.Handle_datetime(self.dateTimeEdit.text())
@@ -252,10 +260,9 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         else:
             if os.path.isfile('ReceivedTofile-TCPSERVER-2019_11_5_10-04-51.DAT'):
                 self.textEdit_2.append("验证文件成功")
-                file = open('ReceivedTofile-TCPSERVER-2019_11_5_10-04-51.DAT', mode='r+', encoding='UTF-8')
+                file = open('ReceivedTofile-TCPSERVER-2019_11_5_10-04-51_half.DAT', mode='r+', encoding='UTF-8')
                 flog = 0
                 for line in file.readlines() :
-                    flog = flog + 1
                     if len(line) != 0:
                         str_line = line.strip().split(',')
                         if len(str_line) >= 11:
@@ -263,7 +270,6 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
                                 dd_jure = self.Handle_dd_jure(str_line)
                                 if ( self.ID_ckeck(str_line )) and (self.DI_check(str_line )) and (self.frame_check(str_line)) and (self.StatNum_check(str_line )):
                                     self.save_SQL_asline(line , str_line)
-                                    print(str(flog))
 
                             else:
                                 break
