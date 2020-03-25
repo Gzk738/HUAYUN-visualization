@@ -216,7 +216,10 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
             mycursor.execute(sql)
 
         return
-        
+    def Table_to_sql(self, sql, Table_Name):
+        sql = sql.replace('*', Table_Name, 1)
+        return sql
+
     def save_SQL_asline(self, line , str_line):
         global flog
         Table_Name = str(str_line[2] + '_' + str_line[7] + '_' + str_line[8] + '_' + str_line[10])
@@ -226,17 +229,22 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         mycursor = conn.cursor()
         time = datetime.datetime.strptime(str(str_line[9]), '%Y%m%d%H%M%S')
         self.Creat_Table(str_line, mycursor, conn, Table_Name)
-        sql = """INSERT INTO `wetherdate`.`57495_yiip_000_001` ( datetime, date) VALUES (%s, %s)"""
+        sql = """INSERT INTO `wetherdate`.`*` ( datetime, date) VALUES (%s, %s)"""
+        sql = self.Table_to_sql(sql, Table_Name)
         val = (time, line)
         # 执行sql语句
-        mycursor.execute(sql, val)
-        #提交到数据库
-        conn.commit()
-        flog = flog +1
-        print(flog)
-        mycursor.close()
-        conn.close()
-
+        try:
+            mycursor.execute(sql, val)
+            #提交到数据库
+            conn.commit()
+            flog = flog +1
+            print(flog)
+            mycursor.close()
+            conn.close()
+        except:
+            print('ERROR')
+            mycursor.close()
+            conn.close()
 
     def Save_datebase(self):
         #dd_inter = datetime.datetime.strptime(str(self.Read_combox_3()), "%S")
