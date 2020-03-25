@@ -7,10 +7,11 @@ import pandas as pd
 import datetime
 import numpy as np
 import pymysql
+import globalvar as gl
 
-
-
-flog = 0
+gl._init() #初始化全局变量管理模块
+gl.set_value('globalvar_flog', 0)#引用全局变量管理模块 globalvar_flog 作为读入天气数据文件中的日志条数的变量
+flog = gl.get_value('globalvar_flog')
 
 
 class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口，这里会不同
