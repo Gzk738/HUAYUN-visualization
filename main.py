@@ -12,6 +12,7 @@ import pymysql
 
 flog = 0
 
+
 class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口，这里会不同
     # class Main(QWidget,Ui_Form):
 
@@ -217,7 +218,7 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
 
         return
     def Table_to_sql(self, sql, Table_Name):
-        sql = sql.replace('*', Table_Name, 1)
+        sql = sql.replace('TABLE_NAME', Table_Name, 1)
         return sql
 
     def save_SQL_asline(self, line , str_line):
@@ -229,7 +230,7 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         mycursor = conn.cursor()
         time = datetime.datetime.strptime(str(str_line[9]), '%Y%m%d%H%M%S')
         self.Creat_Table(str_line, mycursor, conn, Table_Name)
-        sql = """INSERT INTO `wetherdate`.`*` ( datetime, date) VALUES (%s, %s)"""
+        sql = """INSERT INTO `wetherdate`.`TABLE_NAME` ( datetime, date) VALUES (%s, %s)"""
         sql = self.Table_to_sql(sql, Table_Name)
         val = (time, line)
         # 执行sql语句
@@ -296,6 +297,7 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         plt.show()
 
     def DB_Search(self):
+        Table_Name = self.lineEdit.text() + '_' + self.comboBox.currentText()+ '_' + self.lineEdit_2.text() + '_' + self.comboBox_2.currentText()
         beg_time = self.Read_dd()
         end_time = self.Read_dd_2()
         mydb = pymysql.connect(
@@ -305,12 +307,13 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
             database="wetherdate"
         )
         mycursor = mydb.cursor()
-        sql = "SELECT * FROM all_log WHERE datetime >= '%s' and datetime <='%s'"%(beg_time, end_time)
+        sql = "SELECT * FROM TABLE_NAME WHERE datetime >= '%s' and datetime <='%s'"%(beg_time, end_time)
+        sql = self.Table_to_sql(sql, Table_Name)
         mycursor.execute(sql)
         results = mycursor.fetchall()  # fetchall() 获取所有记录
         date = []
         for row in results:
-            date = date + [row[6]]
+            date = date + [row[2]]
 
         self.textEdit_2.append(str(date))
 
