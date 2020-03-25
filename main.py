@@ -260,7 +260,7 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         else:
             if os.path.isfile('ReceivedTofile-TCPSERVER-2019_11_5_10-04-51.DAT'):
                 self.textEdit_2.append("验证文件成功")
-                file = open('ReceivedTofile-TCPSERVER-2019_11_5_10-04-51_half.DAT', mode='r+', encoding='UTF-8')
+                file = open('ReceivedTofile-TCPSERVER-2019_11_5_10-04-51.DAT', mode='r+', encoding='UTF-8')
                 flog = 0
                 for line in file.readlines() :
                     if len(line) != 0:
