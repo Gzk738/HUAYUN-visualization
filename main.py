@@ -439,4 +439,5 @@ if __name__ == "__main__":
 
     config_INIT_()
     App__RUN__()
+    #test for struct
 
