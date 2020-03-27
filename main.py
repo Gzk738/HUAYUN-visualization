@@ -38,7 +38,7 @@ def App__RUN__():
     window = Main_windows()
     child = child_windows()
     btn = window.pushButton_7
-    btn.clicked.connect( child.show )
+    btn.clicked.connect(child.show)
     window.show()
     sys.exit(app.exec_())
 
@@ -435,6 +435,9 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))
 
         self.textEdit_2.append('检索到' + str(len(results)) + '条数据' + '数据处理完成，现在可以输出图像')
+        self.child = child_windows()
+        self.child.show()
+
 
 
 
