@@ -27,7 +27,7 @@ def config_INIT_():
     file = open('config.cfg', mode='r+', encoding='UTF-8')
     str_config = file.read()
     gl.set_value('globalvar_config', str_config)
-    print(gl.get_value('globalvar_config'))
+    gl.get_value('globalvar_config')
     file.close()
 
 
@@ -431,7 +431,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         for loop_1 in range(check_num):
             a = self.Read_specif_ele(results, loop_1)
             exec('list_'+str(loop_1)+'='+str(a))
-            print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
+            #print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
             self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))
 
         self.textEdit_2.append('检索到' + str(len(results)) + '条数据' + '数据处理完成，现在可以输出图像')
