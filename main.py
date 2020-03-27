@@ -37,8 +37,9 @@ def App__RUN__():
     app = QApplication(sys.argv)
     window = Main_windows()
     child = child_windows()
+    btn = window.pushButton_7
+    btn.clicked.connect( child.show )
     window.show()
-
     sys.exit(app.exec_())
 
 class child_windows(QDialog, Ui_Form):
@@ -55,7 +56,10 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         self.pushButton_4.clicked.connect(self.Printinfo_picture)
         self.pushButton_5.clicked.connect(self.config_write)
         self.pushButton_6.clicked.connect(self.config_show)
+        self.pushButton_7.clicked.connect(self.child_win_show)
 
+    def child_win_show(self):
+        a = []
     def config_write(self):
         str_config = self.textEdit_3.toPlainText()
         file = open('config.cfg', mode='r+', encoding='UTF-8')

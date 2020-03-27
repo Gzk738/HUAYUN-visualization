@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>758</width>
-    <height>718</height>
+    <width>742</width>
+    <height>641</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -928,13 +928,26 @@ p, li { white-space: pre-wrap; }
      <string>ARG50</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_7">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>560</y>
+      <width>131</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>子窗口（7）</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>758</width>
+     <width>742</width>
      <height>22</height>
     </rect>
    </property>
