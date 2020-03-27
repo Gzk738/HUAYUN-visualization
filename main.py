@@ -8,8 +8,9 @@
 ------------      -------    --------    -----------
 $2020.3.25         guozikun     1.0         None
 '''
-from PyQt5.QtWidgets import QMainWindow, QApplication
-from untitled import Ui_MainWindow
+from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog
+from child_untitled_1 import *
+from untitled import *
 import os, time, sys, re
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -34,22 +35,40 @@ def config_INIT_():
 
 def App__RUN__():
     app = QApplication(sys.argv)
-    main = Main()
-    main.show()
+    window = Main_windows()
+    child = child_windows()
+    window.show()
+
     sys.exit(app.exec_())
 
-
-class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口，这里会不同
-        # class Main(QWidget,Ui_Form):
-
+class child_windows(QDialog, Ui_Form):
     def __init__(self):
-        super(Main, self).__init__()
+        super(child_windows, self).__init__()
+        self.setupUi(self)
+
+class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口，这里会不同
+    def __init__(self):
+        super(Main_windows, self).__init__()
         self.setupUi(self)
         self.pushButton_2.clicked.connect(self.Save_datebase)
         self.pushButton_3.clicked.connect(self.DB_Search)
         self.pushButton_4.clicked.connect(self.Printinfo_picture)
+        self.pushButton_5.clicked.connect(self.config_write)
+        self.pushButton_6.clicked.connect(self.config_show)
 
+    def config_write(self):
+        str_config = self.textEdit_3.toPlainText()
+        file = open('config.cfg', mode='r+', encoding='UTF-8')
+        file.truncate()
+        file.write(str_config)
+        file.close()
+        self.textEdit_3.append('保存成功')
 
+    def config_show(self):
+        file = open('config.cfg', mode='r+', encoding='UTF-8')
+        str_config = file.read()
+        self.textEdit_3.setText(str_config)
+        file.close()
 
     def Read_dd_2(self):
         Edit_datetime = self.dateTimeEdit_2.text().replace('/', '-', 1) + ':00'
@@ -71,6 +90,12 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         return datetime.datetime.strptime(
             Edit_dict['Year'] + Edit_dict['Mon'] + Edit_dict['Day'] + Edit_dict['Hour'] + Edit_dict['Min'] + \
             Edit_dict['Sec'], "%Y%m%d%H%M%S")
+
+    def Read_config(self):
+        file = open('config.cfg', mode='r+', encoding='UTF-8')
+        str_config = file.read()
+        file.close()
+        return str_config.strip().split(',')
 
     def Read_dd(self):
         Edit_datetime = self.dateTimeEdit.text().replace('/', '-', 1) + ':00'
@@ -338,8 +363,46 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         # 'r--':红色的需要;'bs':蓝色方块;'g^':绿色三角
         plt.plot(t, t, 'r--', t, t ** 2, 'bs', t, t ** 3, 'g^')
         plt.show()
+    def Chackbox(self):
+        checkbox_state = []
+
+        for i in range(1,len(self.Read_config())-1):
+            self.temp = getattr(self, "checkBox_%d" % i)
+            if self.temp.isChecked():
+                checkbox_state.append(1)
+            else:
+                checkbox_state.append(0)
+        return checkbox_state
+
+
+    def Creat_Struct_date(self):
+        file = open('config.cfg', mode='r+', encoding='UTF-8')
+        str_config = file.read().strip().split(',')
+        file.close()
+        Date_type = np.dtype([('row_date', 'S300'),
+                              ('row_qc', 'S300'),
+                              ('QC_8', 'I'),
+                              ('QC_2', 'I'),
+                              ('QC_MISS', 'I')])
+        Struct_date = np.array([('THIS IS BRGIN',
+                                 'THIS IS BEGIN',
+                                 0,
+                                 0,
+                                 0,)] * len(str_config),
+                               dtype=Date_type)
+        return Struct_date
+
+
+    def Read_specif_ele(self, results, loop_1):
+        a = []
+        for row in results:
+            str_line = str(row[2]).strip().split(',')[13:]
+            a.append(str_line[loop_1*2+1])
+
+        return a
 
     def DB_Search(self):
+        check_num = 0
         Table_Name = self.lineEdit.text() + '_' + self.comboBox.currentText()+ '_' + self.lineEdit_2.text() + '_' + self.comboBox_2.currentText()
         beg_time = self.Read_dd()
         end_time = self.Read_dd_2()
@@ -354,11 +417,21 @@ class Main(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口�
         sql = self.Table_to_sql(sql, Table_Name)
         mycursor.execute(sql)
         results = mycursor.fetchall()  # fetchall() 获取所有记录
-        date = []
-        for row in results:
-            date = date + [row[2]]
+        #Struct_date = self.Creat_Struct_date()
+        checkbox_state = self.Chackbox()
 
-        self.textEdit_2.append(str(date))
+        for loop in range(len(checkbox_state)):
+            if checkbox_state[loop] == 1:
+                check_num = check_num + 1
+
+        for loop_1 in range(check_num):
+            a = self.Read_specif_ele(results, loop_1)
+            exec('list_'+str(loop_1)+'='+str(a))
+            print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
+            self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))
+
+        self.textEdit_2.append('检索到' + str(len(results)) + '条数据' + '数据处理完成，现在可以输出图像')
+
 
 
 

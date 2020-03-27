@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>738</width>
-    <height>654</height>
+    <width>758</width>
+    <height>718</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -109,19 +109,6 @@
     </property>
     <property name="text">
      <string>存入数据库（2）</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>250</y>
-      <width>21</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
@@ -326,19 +313,6 @@
      </property>
     </item>
    </widget>
-   <widget class="QLabel" name="label_11">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>81</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>配置文件：</string>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="textEdit_3">
     <property name="geometry">
      <rect>
@@ -353,7 +327,7 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;AAA,AAA5i,AB10,AB20,AB30,AB40,AB50,ADA,ADB,AEA,AEA150,AEB,AEB150,AEC,AEC150,AED,AED150,AEF,AEF150,AFA,AFA150,AFA150a,AFAa,AFB,AFB150,AFC,AFC150,AFD,AFD150,033,AGA,AHA,AHA5,AHC,AHC5,AJA,AJAa,AJAc,AJT,ARG10,ARG20,ARG30,ARG40,ARG50&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun';&quot;&gt;未读取配置文件 请点击读取按钮&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_3">
@@ -382,10 +356,36 @@ p, li { white-space: pre-wrap; }
      <string>输出图像（4）</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox">
+   <widget class="QPushButton" name="pushButton_5">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
+      <y>70</y>
+      <width>121</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>保存配置文件（5）</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_6">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>121</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>读取配置文件（6）</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_1">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
       <y>290</y>
       <width>65</width>
       <height>16</height>
@@ -398,20 +398,20 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_2">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>310</y>
       <width>65</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>AAA5I</string>
+     <string>AAA5i</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="checkBox_3">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>330</y>
       <width>65</width>
       <height>16</height>
@@ -424,7 +424,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_4">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>350</y>
       <width>65</width>
       <height>16</height>
@@ -437,7 +437,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_5">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>370</y>
       <width>65</width>
       <height>16</height>
@@ -450,7 +450,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_6">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>390</y>
       <width>65</width>
       <height>16</height>
@@ -463,7 +463,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_7">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>410</y>
       <width>65</width>
       <height>16</height>
@@ -476,7 +476,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_8">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>430</y>
       <width>65</width>
       <height>16</height>
@@ -489,7 +489,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_9">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>450</y>
       <width>65</width>
       <height>16</height>
@@ -502,7 +502,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_10">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>470</y>
       <width>65</width>
       <height>16</height>
@@ -515,7 +515,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_11">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>490</y>
       <width>65</width>
       <height>16</height>
@@ -528,7 +528,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_12">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>510</y>
       <width>65</width>
       <height>16</height>
@@ -541,7 +541,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_13">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>530</y>
       <width>65</width>
       <height>16</height>
@@ -554,7 +554,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_14">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>550</y>
       <width>65</width>
       <height>16</height>
@@ -567,7 +567,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_15">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>570</y>
       <width>65</width>
       <height>16</height>
@@ -580,8 +580,8 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_16">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>590</y>
+      <x>80</x>
+      <y>290</y>
       <width>65</width>
       <height>16</height>
      </rect>
@@ -590,24 +590,11 @@ p, li { white-space: pre-wrap; }
      <string>AED</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_18">
+   <widget class="QCheckBox" name="checkBox_17">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>550</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>033</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_19">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>290</y>
+      <x>80</x>
+      <y>310</y>
       <width>65</width>
       <height>16</height>
      </rect>
@@ -616,11 +603,50 @@ p, li { white-space: pre-wrap; }
      <string>AED150</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="checkBox_18">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>330</y>
+      <width>65</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>AEF</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_19">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>350</y>
+      <width>65</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>AEF150</string>
+    </property>
+   </widget>
    <widget class="QCheckBox" name="checkBox_20">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>80</x>
       <y>370</y>
+      <width>65</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>AFA</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_21">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>390</y>
       <width>65</width>
       <height>16</height>
      </rect>
@@ -629,11 +655,11 @@ p, li { white-space: pre-wrap; }
      <string>AFA150</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_21">
+   <widget class="QCheckBox" name="checkBox_22">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>390</y>
+      <x>80</x>
+      <y>410</y>
       <width>65</width>
       <height>16</height>
      </rect>
@@ -642,10 +668,10 @@ p, li { white-space: pre-wrap; }
      <string>AFA150a</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_22">
+   <widget class="QCheckBox" name="checkBox_23">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>80</x>
       <y>430</y>
       <width>65</width>
       <height>16</height>
@@ -655,23 +681,10 @@ p, li { white-space: pre-wrap; }
      <string>AFB</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_23">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>570</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AGA</string>
-    </property>
-   </widget>
    <widget class="QCheckBox" name="checkBox_24">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>80</x>
       <y>450</y>
       <width>65</width>
       <height>16</height>
@@ -684,33 +697,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QCheckBox" name="checkBox_25">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>330</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AEF150</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_26">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>310</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AEF</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_27">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
+      <x>80</x>
       <y>470</y>
       <width>65</width>
       <height>16</height>
@@ -720,23 +707,10 @@ p, li { white-space: pre-wrap; }
      <string>AFC</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_28">
+   <widget class="QCheckBox" name="checkBox_26">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>590</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AHA</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_29">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
+      <x>80</x>
       <y>490</y>
       <width>65</width>
       <height>16</height>
@@ -746,36 +720,10 @@ p, li { white-space: pre-wrap; }
      <string>AFC150</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_30">
+   <widget class="QCheckBox" name="checkBox_27">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>350</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AFA</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_31">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>530</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AFD150</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_32">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
+      <x>80</x>
       <y>510</y>
       <width>65</width>
       <height>16</height>
@@ -785,23 +733,49 @@ p, li { white-space: pre-wrap; }
      <string>AFD</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_33">
+   <widget class="QCheckBox" name="checkBox_28">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>410</y>
+      <x>80</x>
+      <y>530</y>
       <width>65</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>AFAa</string>
+     <string>AFD150</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_35">
+   <widget class="QCheckBox" name="checkBox_29">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>80</x>
+      <y>550</y>
+      <width>65</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>AGA</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_30">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>570</y>
+      <width>65</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>AHA</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_31">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
       <y>290</y>
       <width>65</width>
       <height>16</height>
@@ -811,75 +785,10 @@ p, li { white-space: pre-wrap; }
      <string>AHA5</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_36">
+   <widget class="QCheckBox" name="checkBox_32">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>370</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AJAa</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_37">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>390</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AJAc</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_38">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>430</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ARG10</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_40">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>450</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ARG20</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_41">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>330</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AHC5</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_42">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
+      <x>160</x>
       <y>310</y>
       <width>65</width>
       <height>16</height>
@@ -889,36 +798,23 @@ p, li { white-space: pre-wrap; }
      <string>AHC</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_43">
+   <widget class="QCheckBox" name="checkBox_33">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>470</y>
+      <x>160</x>
+      <y>330</y>
       <width>65</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>ARG30</string>
+     <string>AHC5</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_45">
+   <widget class="QCheckBox" name="checkBox_34">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>490</y>
-      <width>65</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ARG40</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_46">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
+      <x>160</x>
       <y>350</y>
       <width>65</width>
       <height>16</height>
@@ -928,36 +824,36 @@ p, li { white-space: pre-wrap; }
      <string>AJA</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_47">
+   <widget class="QCheckBox" name="checkBox_35">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>530</y>
+      <x>160</x>
+      <y>370</y>
       <width>65</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>ARG50</string>
+     <string>AJAa</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_48">
+   <widget class="QCheckBox" name="checkBox_36">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>510</y>
+      <x>160</x>
+      <y>390</y>
       <width>65</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>ARG50</string>
+     <string>AJAc</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_49">
+   <widget class="QCheckBox" name="checkBox_37">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>160</x>
       <y>410</y>
       <width>65</width>
       <height>16</height>
@@ -967,17 +863,69 @@ p, li { white-space: pre-wrap; }
      <string>AJT</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_5">
+   <widget class="QCheckBox" name="checkBox_38">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>60</y>
-      <width>121</width>
-      <height>28</height>
+      <x>160</x>
+      <y>430</y>
+      <width>65</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>保存配置文件（5）</string>
+     <string>ARG10</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_39">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>450</y>
+      <width>65</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ARG20</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_40">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>470</y>
+      <width>65</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ARG30</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_41">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>490</y>
+      <width>65</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ARG40</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_42">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>510</y>
+      <width>65</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ARG50</string>
     </property>
    </widget>
   </widget>
@@ -986,7 +934,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>738</width>
+     <width>758</width>
      <height>22</height>
     </rect>
    </property>
