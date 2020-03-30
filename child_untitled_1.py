@@ -23,5 +23,5 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "数据清洗"))
         self.label.setText(_translate("Form", "数据处理完毕，可以输出图像"))

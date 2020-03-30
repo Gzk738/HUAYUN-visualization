@@ -18,6 +18,7 @@ import datetime
 import numpy as np
 import pymysql
 import globalvar as gl
+import cryptography
 
 def config_INIT_():
     gl._init()  # 初始化全局变量管理模块
@@ -61,10 +62,13 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         str_config = self.textEdit_3.toPlainText()
         file = open('config.cfg', mode='r+', encoding='UTF-8')
         file.truncate()
-        file.write(str_config)
-        file.close()
-        self.textEdit_3.append('保存成功')
-
+        if str_config.find(',') == -1:
+            file.close()
+            self.textEdit_3.append('配置文件格式有问题 保存失败 请清空此窗口后输入配置文件')
+        else:
+            file.write(str_config)
+            file.close()
+            self.textEdit_3.append('保存成功')
     def config_show(self):
         file = open('config.cfg', mode='r+', encoding='UTF-8')
         str_config = file.read()
@@ -395,6 +399,12 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
 
 
     def Read_specif_ele(self, results, loop_1):
+        """
+        读取所有的元素数值大小返回列表
+        :param results:
+        :param loop_1:
+        :return: a = ['0154', '0155', '0156', '0155']
+        """
         a = []
         for row in results:
             str_line = str(row[2]).strip().split(',')[13:]
@@ -431,9 +441,18 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             #print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
             self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))
 
+
         self.textEdit_2.append('检索到' + str(len(results)) + '条数据' + '数据处理完成，现在可以输出图像')
         self.child = child_windows()
         self.child.show()
+
+
+        x = range(100)
+        y = np.sin(x)
+        t = np.cos(x)
+        plt.plot(x, y, ls="-", lw=2, label="plot figure")
+        plt.plot(x, t, label="t")
+        plt.show()
 
 
 
@@ -443,5 +462,4 @@ if __name__ == "__main__":
 
     config_INIT_()
     App__RUN__()
-    #test for struct
 

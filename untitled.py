@@ -286,7 +286,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "华云"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "大气数据清洗与可视化"))
         self.lineEdit.setText(_translate("MainWindow", "57495"))
         self.label_3.setText(_translate("MainWindow", "检索起始时间"))
         self.comboBox.setItemText(0, _translate("MainWindow", "YIIP"))
