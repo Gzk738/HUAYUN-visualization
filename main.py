@@ -11,6 +11,7 @@ $2020.3.25         guozikun     1.0         None
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog
 from child_untitled_1 import *
 from untitled import *
+from datetime import timedelta
 import os, time, sys, re
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -18,16 +19,26 @@ import datetime
 import numpy as np
 import pymysql
 import globalvar as gl
+import cryptography
+
+"""
+gl.set_value('globalvar_Missing', 0)
+gl.set_value('globalvar_uncertainty', 0)
+"""
+g_Missing = 0
+g_uncertainty = 0
+qc = []
 
 def config_INIT_():
     gl._init()  # 初始化全局变量管理模块
-    gl.set_value('globalvar_flog', 0)  # 引用全局变量管理模块 globalvar_flog 作为读入天气数据文件中的日志条数的变量
+    gl.set_value('globalvar_flog', 0)# 引用全局变量管理模块 globalvar_flog 作为读入天气数据文件中的日志条数的变量
+
     flog = gl.get_value('globalvar_flog')
 
     file = open('config.cfg', mode='r+', encoding='UTF-8')
     str_config = file.read()
     gl.set_value('globalvar_config', str_config)
-    print(gl.get_value('globalvar_config'))
+    gl.get_value('globalvar_config')
     file.close()
 
 
@@ -36,9 +47,7 @@ def config_INIT_():
 def App__RUN__():
     app = QApplication(sys.argv)
     window = Main_windows()
-    child = child_windows()
     window.show()
-
     sys.exit(app.exec_())
 
 class child_windows(QDialog, Ui_Form):
@@ -55,15 +64,21 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         self.pushButton_4.clicked.connect(self.Printinfo_picture)
         self.pushButton_5.clicked.connect(self.config_write)
         self.pushButton_6.clicked.connect(self.config_show)
+        self.pushButton_7.clicked.connect(self.clean_win)
 
+    def clean_win(self):
+        self.textEdit_2.setText('')
     def config_write(self):
         str_config = self.textEdit_3.toPlainText()
         file = open('config.cfg', mode='r+', encoding='UTF-8')
         file.truncate()
-        file.write(str_config)
-        file.close()
-        self.textEdit_3.append('保存成功')
-
+        if str_config.find(',') == -1:
+            file.close()
+            self.textEdit_3.append('配置文件格式有问题 保存失败 请清空此窗口后输入配置文件')
+        else:
+            file.write(str_config)
+            file.close()
+            self.textEdit_3.append('保存成功')
     def config_show(self):
         file = open('config.cfg', mode='r+', encoding='UTF-8')
         str_config = file.read()
@@ -98,6 +113,10 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         return str_config.strip().split(',')
 
     def Read_dd(self):
+        """
+        读取页面输入的时间
+        :return: datetime
+        """
         Edit_datetime = self.dateTimeEdit.text().replace('/', '-', 1) + ':00'
         Edit_datetime = Edit_datetime.replace(':', '+', 1)
         Edit_dict = {'Year': Edit_datetime[0:4],
@@ -366,7 +385,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
     def Chackbox(self):
         checkbox_state = []
 
-        for i in range(1,len(self.Read_config())-1):
+        for i in range(1,len(self.Read_config())):
             self.temp = getattr(self, "checkBox_%d" % i)
             if self.temp.isChecked():
                 checkbox_state.append(1)
@@ -375,7 +394,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         return checkbox_state
 
 
-    def Creat_Struct_date(self):
+    """def Creat_Struct_date(self):
         file = open('config.cfg', mode='r+', encoding='UTF-8')
         str_config = file.read().strip().split(',')
         file.close()
@@ -390,18 +409,85 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                                  0,
                                  0,)] * len(str_config),
                                dtype=Date_type)
-        return Struct_date
+        return Struct_date"""
 
 
-    def Read_specif_ele(self, results, loop_1):
+    def Read_specif_ele(self, results, loop_1, checkbox_position):
+        """
+        读取所有的元素数值大小返回列表
+        :param results:
+        :param loop_1:
+        :return: a = ['0154', '0155', '0156', '0155']
+        """
+        global  g_Missing
+        global g_uncertainty
+        global qc
         a = []
         for row in results:
             str_line = str(row[2]).strip().split(',')[13:]
-            a.append(str_line[loop_1*2+1])
+            a.append(str_line[checkbox_position[loop_1]*2+1])
+            qc.append(int(str_line[len(str_line) - 9][checkbox_position[loop_1]]))
+            if str_line[len(str_line) - 9][checkbox_position[loop_1]] == 1:
+                g_uncertainty = g_uncertainty + 1
+            if str_line[len(str_line) - 9][checkbox_position[loop_1]] == 8:
+                g_Missing = g_Missing + 1
+
 
         return a
 
+    def get_Checkstatus_position(self, checkbox_state):
+        """
+        用来存放checkbox的选择位置
+        :param checkbox_state:
+        :return: checkbox_state[2, 6, 45, 78, .............]
+        """
+        a = []
+        checkbox_position = list(enumerate(checkbox_state))
+        for i in checkbox_position:
+            if i [1] == 1:
+                a.append(i[0])
+        return a
+
+    def Read_specif_qc(self, results, loop_1, checkbox_position):
+        qc = []
+        for row in results:
+            str_line = str(row[2]).strip().split(',')[13:]
+            qc.append(int(str_line[len(str_line) - 9][checkbox_position[loop_1]]))
+        return qc
+
+    def Handle_result(self, result):
+        i = 0
+        results = []
+        #delta = timedelta(minutes = 1)
+        dd = self.Read_dd()
+        dd_2 = self.Read_dd_2()
+
+        while dd <= dd_2 and i < len(result):
+            if result [i][1] == dd:
+                results.append(result [i])
+                i = i + 1
+            else:
+                results.append(('id',dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,000,20191105100500,001,043,03,AAA,000,AAA5i,000,AB10,000,AB20,000,AB30,000,AB40,000,AB50,000,ADA,000,ADB,000,AEA,000,AEA150,000,AEB,000,AEB150,000,AEC,000,AEC150,000,AED,000,AED150,000,AEF,000,AEF150,000,AFA,000,AFA150,000,AFA150a,000,AFAa,000,AFB,000,AFB150,000,AFC,000,AFC150,000,AFD,000,AFD150,000,AGA,000,AHA,000,AHA5,0000,AHC,000,AHC5,0000,AJA,000,AJAa,000,AJAc,000,AJT,201911051005,ARG10,000,ARG20,000,ARG30,000,ARG40,000,ARG50,000,8000000000000000000000000000000000000000000,z,1,rL,1,xA,7,9748,ED'))
+
+            dd = dd + datetime.timedelta(minutes=1)
+
+        if result[len(result)-1][1] != dd_2:
+            results.append(('id',dd,'BG,001,57495,394827,1162815,00444,14,YIIP,000,20191105100500,001,043,03,AAA,000,AAA5i,000,AB10,000,AB20,000,AB30,000,AB40,000,AB50,000,ADA,000,ADB,000,AEA,000,AEA150,000,AEB,000,AEB150,000,AEC,000,AEC150,000,AED,000,AED150,000,AEF,000,AEF150,000,AFA,000,AFA150,000,AFA150a,000,AFAa,000,AFB,000,AFB150,000,AFC,000,AFC150,000,AFD,000,AFD150,000,AGA,000,AHA,000,AHA5,0000,AHC,000,AHC5,0000,AJA,000,AJAa,000,AJAc,000,AJT,201911051005,ARG10,000,ARG20,000,ARG30,000,ARG40,000,ARG50,000,8000000000000000000000000000000000000000000,z,1,rL,1,xA,7,9748,ED'))
+
+        return results
+
+        """while i < len(results) - 1 and len(results) > 1:
+            #Time_apart = (results[i+1][1] - results[i][1])
+            if (results[i+1][1] - results[i][1]) != timedelta(minutes = 1):
+                for loop in range(int((results[i+1][1] - results[i][1]).seconds/60)-1):
+                    results[i+1:i+1] = [0,0,0]
+                    i = i+1"""
+
+        return tuple(results)
+
     def DB_Search(self):
+        global  g_Missing
+        global g_uncertainty
         check_num = 0
         Table_Name = self.lineEdit.text() + '_' + self.comboBox.currentText()+ '_' + self.lineEdit_2.text() + '_' + self.comboBox_2.currentText()
         beg_time = self.Read_dd()
@@ -416,21 +502,40 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         sql = "SELECT * FROM TABLE_NAME WHERE datetime >= '%s' and datetime <='%s'"%(beg_time, end_time)
         sql = self.Table_to_sql(sql, Table_Name)
         mycursor.execute(sql)
-        results = mycursor.fetchall()  # fetchall() 获取所有记录
+        # fetchall() 获取所有记录
         #Struct_date = self.Creat_Struct_date()
+        results = self.Handle_result(mycursor.fetchall())
         checkbox_state = self.Chackbox()
-
+        checkbox_position = self.get_Checkstatus_position(checkbox_state)
         for loop in range(len(checkbox_state)):
             if checkbox_state[loop] == 1:
                 check_num = check_num + 1
 
         for loop_1 in range(check_num):
-            a = self.Read_specif_ele(results, loop_1)
-            exec('list_'+str(loop_1)+'='+str(a))
-            print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
+            data = self.Read_specif_ele(results, loop_1, checkbox_position)
+            exec('list_'+str(loop_1)+'='+str(data))
+            qc_data = self.Read_specif_qc(results, loop_1, checkbox_position)
+            exec('qc_' + str(loop_1) + '=' + str(qc_data))
+            #print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
             self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))
+            self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))
 
-        self.textEdit_2.append('检索到' + str(len(results)) + '条数据' + '数据处理完成，现在可以输出图像')
+
+        self.textEdit_2.append('共检索' + str(len(results)) + '条数据' + '缺测：' + str(int((self.Read_dd_2() - self.Read_dd()).seconds/60)+1 - len(results)) + '条 存疑' + str(g_uncertainty) + '条')
+        """self.child = child_windows()
+        self.child.show()"""
+
+        """
+        Missing_num = 
+        x = range(100)
+        y = np.sin(x)
+        t = np.cos(x)
+        plt.plot(x, y, ls="-", lw=2, label="plot figure")
+        plt.plot(x, t, label="t")
+        plt.show()
+        
+        """
+
 
 
 
