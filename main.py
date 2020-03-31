@@ -544,5 +544,3 @@ if __name__ == "__main__":
 
     config_INIT_()
     App__RUN__()
-#新版本 ——v2.0
-
