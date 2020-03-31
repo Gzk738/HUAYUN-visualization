@@ -477,7 +477,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         return results
 
         """while i < len(results) - 1 and len(results) > 1:
-            #Time_apart = (results[i+1][1] - results[i][1])
+            Time_apart = (results[i+1][1] - results[i][1])
             if (results[i+1][1] - results[i][1]) != timedelta(minutes = 1):
                 for loop in range(int((results[i+1][1] - results[i][1]).seconds/60)-1):
                     results[i+1:i+1] = [0,0,0]
@@ -544,4 +544,5 @@ if __name__ == "__main__":
 
     config_INIT_()
     App__RUN__()
+    #有恢复版本
 
