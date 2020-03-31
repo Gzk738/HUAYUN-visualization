@@ -385,7 +385,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
     def Chackbox(self):
         checkbox_state = []
 
-        for i in range(1,len(self.Read_config())-1):
+        for i in range(1,len(self.Read_config())):
             self.temp = getattr(self, "checkBox_%d" % i)
             if self.temp.isChecked():
                 checkbox_state.append(1)
