@@ -375,13 +375,20 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             else:
                 self.textEdit.append('未找到文件，请放到根目录下')
 
-    def Printinfo_picture(self):
+    def Printinfo_picture(self, picture_data):
 
         # 以0.2为间隔均匀采样
-        t = np.arange(0., 5., 0.2)
-        # 'r--':红色的需要;'bs':蓝色方块;'g^':绿色三角
-        plt.plot(t, t, 'r--', t, t ** 2, 'bs', t, t ** 3, 'g^')
-        plt.show()
+        len_X = int((((self.Read_dd_2()) - (self.Read_dd())).seconds/60) + (((self.Read_dd_2()) - (self.Read_dd())).days*1440))
+        x = range(len_X+1)
+        try:
+            for i in range(len(picture_data)):
+                plt.plot(x, picture_data[i], '.')
+            plt.show()
+
+        except:
+            self.textEdit_2.append('图像输出失败')
+
+
     def Chackbox(self):
         checkbox_state = []
 
@@ -425,13 +432,14 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         g_Missing = 0
         g_uncertainty = 0
         a = []
+        config = self.Read_config()
         for row in results:
             str_line = str(row[2]).strip().split(',')[13:]
             a.append(str_line[checkbox_position[loop_1]*2+1])
-            qc.append((str_line[len(str_line) - 9][checkbox_position[loop_1]]))
-            if str_line[len(str_line) - 9][checkbox_position[loop_1]] == '1':
+            qc.append((str_line[(len(config)-1)*2][checkbox_position[loop_1]]))
+            if str_line[(len(config)-1)*2][checkbox_position[loop_1]] == '1':
                 g_uncertainty = g_uncertainty + 1
-            if str_line[len(str_line) - 9][checkbox_position[loop_1]] == '8':
+            if str_line[(len(config)-1)*2][checkbox_position[loop_1]] == '8':
                 g_Missing = g_Missing + 1
 
         self.textEdit_2.append('   缺测：'+str(g_Missing)+'    存疑:' + str(g_uncertainty))
@@ -453,12 +461,13 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
 
     def Read_specif_qc(self, results, loop_1, checkbox_position):
         qc = []
+        config = self.Read_config()
         for row in results:
             str_line = str(row[2]).strip().split(',')[13:]
-            qc.append((str_line[len(str_line) - 9][checkbox_position[loop_1]]))
+            qc.append((str_line[(len(config)-1)*2][checkbox_position[loop_1]]))
         return qc
 
-    def Handle_result(self, result):
+    def Repair_result(self, result):
         i = 0
         results = []
         #delta = timedelta(minutes = 1)
@@ -470,21 +479,21 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                 results.append(result [i])
                 i = i + 1
             else:
-                results.append(('id',dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,000,20191105100500,001,043,03,AAA,\
-000,AAA5i,000,AB10,000,AB20,000,AB30,000,AB40,000,AB50,000,ADA,000,ADB,000,AEA,000,AEA150,000,AEB,000,\
-AEB150,000,AEC,000,AEC150,000,AED,000,AED150,000,AEF,000,AEF150,000,AFA,000,AFA150,000,AFA150a,000,AFAa,\
-000,AFB,000,AFB150,000,AFC,000,AFC150,000,AFD,000,AFD150,000,AGA,000,AHA,000,AHA5,0000,AHC,000,AHC5,0000,\
-AJA,000,AJAa,000,AJAc,000,AJT,201911051005,ARG10,000,ARG20,000,ARG30,000,ARG40,000,ARG50,000,\
+                results.append(('id',dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,0,datetime,001,043,03,AAA,\
+0,AAA5i,0,AB10,0,AB20,0,AB30,0,AB40,0,AB50,0,ADA,0,ADB,0,AEA,0,AEA150,0,AEB,0,\
+AEB150,0,AEC,0,AEC150,0,AED,0,AED150,0,AEF,0,AEF150,0,AFA,0,AFA150,0,AFA150a,0,AFAa,\
+0,AFB,0,AFB150,0,AFC,0,AFC150,0,AFD,0,AFD150,0,AGA,0,AHA,0,AHA5,00,AHC,0,AHC5,00,\
+AJA,0,AJAa,0,AJAc,0,AJT,201911051005,ARG10,0,ARG20,0,ARG30,0,ARG40,0,ARG50,0,\
 NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
 
             dd = dd + datetime.timedelta(minutes=1)
 
         if result[len(result)-1][1] != dd_2:
-            results.append(('id',dd,'BG,001,57495,394827,1162815,00444,14,YIIP,000,20191105100500,001,043,03,AAA,\
-000,AAA5i,000,AB10,000,AB20,000,AB30,000,AB40,000,AB50,000,ADA,000,ADB,000,AEA,000,AEA150,000,AEB,000,\
-AEB150,000,AEC,000,AEC150,000,AED,000,AED150,000,AEF,000,AEF150,000,AFA,000,AFA150,000,AFA150a,000,AFAa,\
-000,AFB,000,AFB150,000,AFC,000,AFC150,000,AFD,000,AFD150,000,AGA,000,AHA,000,AHA5,0000,AHC,000,AHC5,0000,\
-AJA,000,AJAa,000,AJAc,000,AJT,201911051005,ARG10,000,ARG20,000,ARG30,000,ARG40,000,ARG50,000,\
+            results.append(('id',dd,'id',dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,0,datetime,001,043,03,AAA,\
+0,AAA5i,0,AB10,0,AB20,0,AB30,0,AB40,0,AB50,0,ADA,0,ADB,0,AEA,0,AEA150,0,AEB,0,\
+AEB150,0,AEC,0,AEC150,0,AED,0,AED150,0,AEF,0,AEF150,0,AFA,0,AFA150,0,AFA150a,0,AFAa,\
+0,AFB,0,AFB150,0,AFC,0,AFC150,0,AFD,0,AFD150,0,AGA,0,AHA,0,AHA5,00,AHC,0,AHC5,00,\
+AJA,0,AJAa,0,AJAc,0,AJT,201911051005,ARG10,0,ARG20,0,ARG30,0,ARG40,0,ARG50,0,\
 NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
 
         return results
@@ -504,9 +513,31 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
         b = len(results)
         self.textEdit_2.append('数据缺失：'  + str(a - b)+ '条')
 
+    def Replace_result(self, results_):
+        """
+
+        :param results:
+        :return: results
+        """
+        replaced_result = []
+        b = ()
+        for i in range(len(results_)):
+            a = list(results_[i])
+
+            if a[2].find('///') != -1:
+                a[2] = str(a[2]).replace('///', '0')
+                replaced_result.append(tuple(a))
+            else:
+                replaced_result.append(tuple(a))
+                pass
+
+        return replaced_result
+
+
     def DB_Search(self):
         global  g_Missing
         global g_uncertainty
+        picture_date = []
         check_num = 0
         Table_Name = self.lineEdit.text() + '_' + self.comboBox.currentText()+ '_' + self.lineEdit_2.text() + '_' + self.comboBox_2.currentText()
         beg_time = self.Read_dd()
@@ -524,7 +555,8 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
         # fetchall() 获取所有记录
         #Struct_date = self.Creat_Struct_date()
         db_data = mycursor.fetchall()
-        results = self.Handle_result(db_data)
+        repare_data = self.Repair_result(db_data)
+        results = self.Replace_result(repare_data)
         checkbox_state = self.Chackbox()
         checkbox_position = self.get_Checkstatus_position(checkbox_state)
         for loop in range(len(checkbox_state)):
@@ -539,12 +571,15 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
             #print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
             self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))
             self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))
+            picture_date.append(tuple(eval('list_' + str(loop_1))))
 
 
         self.textEdit_2.append('+++++++++++++++++++++++++共检索' + str(len(results)) + '条数据++++++++++++++++++++++++++++++++++')
         self.printinfo_MissingNum(db_data)
         mycursor.close()
         mydb.close()
+        self.Printinfo_picture(picture_date)
+
         """self.child = child_windows()
         self.child.show()"""
 
