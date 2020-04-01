@@ -422,16 +422,19 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         global  g_Missing
         global g_uncertainty
         global qc
+        g_Missing = 0
+        g_uncertainty = 0
         a = []
         for row in results:
             str_line = str(row[2]).strip().split(',')[13:]
             a.append(str_line[checkbox_position[loop_1]*2+1])
-            qc.append(int(str_line[len(str_line) - 9][checkbox_position[loop_1]]))
-            if str_line[len(str_line) - 9][checkbox_position[loop_1]] == 1:
+            qc.append((str_line[len(str_line) - 9][checkbox_position[loop_1]]))
+            if str_line[len(str_line) - 9][checkbox_position[loop_1]] == '1':
                 g_uncertainty = g_uncertainty + 1
-            if str_line[len(str_line) - 9][checkbox_position[loop_1]] == 8:
+            if str_line[len(str_line) - 9][checkbox_position[loop_1]] == '8':
                 g_Missing = g_Missing + 1
 
+        self.textEdit_2.append('   缺测：'+str(g_Missing)+'    存疑:' + str(g_uncertainty))
 
         return a
 
@@ -452,7 +455,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         qc = []
         for row in results:
             str_line = str(row[2]).strip().split(',')[13:]
-            qc.append(int(str_line[len(str_line) - 9][checkbox_position[loop_1]]))
+            qc.append((str_line[len(str_line) - 9][checkbox_position[loop_1]]))
         return qc
 
     def Handle_result(self, result):
@@ -472,7 +475,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
 AEB150,000,AEC,000,AEC150,000,AED,000,AED150,000,AEF,000,AEF150,000,AFA,000,AFA150,000,AFA150a,000,AFAa,\
 000,AFB,000,AFB150,000,AFC,000,AFC150,000,AFD,000,AFD150,000,AGA,000,AHA,000,AHA5,0000,AHC,000,AHC5,0000,\
 AJA,000,AJAa,000,AJAc,000,AJT,201911051005,ARG10,000,ARG20,000,ARG30,000,ARG40,000,ARG50,000,\
-8000000000000000000000000000000000000000000,z,1,rL,1,xA,7,9748,ED'))
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
 
             dd = dd + datetime.timedelta(minutes=1)
 
@@ -482,7 +485,7 @@ AJA,000,AJAa,000,AJAc,000,AJT,201911051005,ARG10,000,ARG20,000,ARG30,000,ARG40,0
 AEB150,000,AEC,000,AEC150,000,AED,000,AED150,000,AEF,000,AEF150,000,AFA,000,AFA150,000,AFA150a,000,AFAa,\
 000,AFB,000,AFB150,000,AFC,000,AFC150,000,AFD,000,AFD150,000,AGA,000,AHA,000,AHA5,0000,AHC,000,AHC5,0000,\
 AJA,000,AJAa,000,AJAc,000,AJT,201911051005,ARG10,000,ARG20,000,ARG30,000,ARG40,000,ARG50,000,\
-8000000000000000000000000000000000000000000,z,1,rL,1,xA,7,9748,ED'))
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
 
         return results
 
@@ -497,7 +500,9 @@ AJA,000,AJAa,000,AJAc,000,AJT,201911051005,ARG10,000,ARG20,000,ARG30,000,ARG40,0
         return tuple(results)
 
     def printinfo_MissingNum(self, results):
-        self.textEdit_2.append('缺测：'  + str(int((self.Read_dd_2() - self.Read_dd()).seconds / 60) + 1 - len(results))+ '条')
+        a = int((self.Read_dd_2() - self.Read_dd()).seconds / 60) + 1
+        b = len(results)
+        self.textEdit_2.append('数据缺失：'  + str(a - b)+ '条')
 
     def DB_Search(self):
         global  g_Missing
@@ -518,8 +523,8 @@ AJA,000,AJAa,000,AJAc,000,AJT,201911051005,ARG10,000,ARG20,000,ARG30,000,ARG40,0
         mycursor.execute(sql)
         # fetchall() 获取所有记录
         #Struct_date = self.Creat_Struct_date()
-        results = self.Handle_result(mycursor.fetchall())
-        self.printinfo_MissingNum(results)
+        db_data = mycursor.fetchall()
+        results = self.Handle_result(db_data)
         checkbox_state = self.Chackbox()
         checkbox_position = self.get_Checkstatus_position(checkbox_state)
         for loop in range(len(checkbox_state)):
@@ -536,7 +541,10 @@ AJA,000,AJAa,000,AJAc,000,AJT,201911051005,ARG10,000,ARG20,000,ARG30,000,ARG40,0
             self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))
 
 
-        self.textEdit_2.append('共检索' + str(len(results)) + '条数据, 存疑' + str(g_uncertainty) + '条')
+        self.textEdit_2.append('+++++++++++++++++++++++++共检索' + str(len(results)) + '条数据++++++++++++++++++++++++++++++++++')
+        self.printinfo_MissingNum(db_data)
+        mycursor.close()
+        mydb.close()
         """self.child = child_windows()
         self.child.show()"""
 
