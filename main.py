@@ -379,10 +379,10 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
 
         # 以0.2为间隔均匀采样
         len_X = int((((self.Read_dd_2()) - (self.Read_dd())).seconds/60) + (((self.Read_dd_2()) - (self.Read_dd())).days*1440))
-        x = range(len_X+1)
         try:
             for i in range(len(picture_data)):
-                plt.plot(x, picture_data[i], '.')
+                list_data = [int(j) for j in picture_data[i]]
+                plt.plot(list(list_data), '+')
             plt.show()
 
         except:
