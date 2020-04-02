@@ -382,7 +382,8 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         try:
             for i in range(len(picture_data)):
                 list_data = [int(j) for j in picture_data[i]]
-                plt.plot(list(list_data), '+')
+                plt.plot(list(list_data), '+',  label='Philadelphia')
+                plt.plot(self.get_Missing_position(picture_data[i]),[0]*len(self.get_Missing_position(picture_data[i])), 'o', color = 'black', label = 'Philadelphia')
             plt.show()
 
         except:
@@ -456,6 +457,19 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         checkbox_position = list(enumerate(checkbox_state))
         for i in checkbox_position:
             if i [1] == 1:
+                a.append(i[0])
+        return a
+
+    def get_Missing_position(self, state):
+        """
+        用来存放checkbox的选择位置
+        :param checkbox_state:
+        :return: checkbox_state[2, 6, 45, 78, .............]
+        """
+        a = []
+        checkbox_position = list(enumerate(state))
+        for i in checkbox_position:
+            if i [1] == '0':
                 a.append(i[0])
         return a
 
