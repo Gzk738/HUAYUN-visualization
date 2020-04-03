@@ -294,6 +294,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             mycursor.execute(sql)
 
         return
+
     def Table_to_sql(self, sql, Table_Name):
         """
         :param sql:
