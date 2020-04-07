@@ -377,7 +377,9 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                 self.textEdit.append('未找到文件，请放到根目录下')
 
     def Printinfo_picture(self, picture_data, qc_data):
-
+        error = 2
+        miss = 1
+        uncertain = 8
         plt.title('Atmospheric data')
         plt.xlabel('date time')
         plt.ylabel('data')
@@ -386,20 +388,23 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
 
         for i in range(len(picture_data)):
             list_data = [int(j) for j in picture_data[i]]
-            plt.plot(list(list_data), '+',  label= "xxxxxxxxx")
+            plt.plot(list(list_data), '-',  label= "data")
             #画NULL的点
             plt.plot(self.get_Missing_position(picture_data[i], qc_data),
                      [0]*len(self.get_Missing_position(picture_data[i], qc_data)),
-                     'o', color = 'black', label = 'Philadelphia')
+                     'o', color = 'black', label = 'data loss')
             #画qc = 8的缺测点
             plt.plot(self.get_measuring_position(picture_data[i], qc_data),
-                     [0] * len(self.get_measuring_position(picture_data[i], qc_data)), 'o', color='blue',
-                     label='Philadelphia')
+                     [0] * len(self.get_measuring_position(picture_data[i], qc_data)), 'o', color='green',
+                     label='missing measuring')
             # 画qc = 1的缺测点
-            plt.plot(self.get_uncertainty_position(picture_data[i], qc_data),
-                     [0] * len(self.get_uncertainty_position(picture_data[i], qc_data)), 'o', color='red',
-                     label='Philadelphia')
-
+            plt.plot(self.get_position_x(picture_data[i], qc_data, uncertain),
+                     self.get_position_y(picture_data[i], qc_data, uncertain), 'o', color='red',
+                     label='data doubt')
+            plt.plot(self.get_position_y(picture_data[i], qc_data, error),
+                     self.get_position_y(picture_data[i], qc_data, error), 'o', color='red',
+                     label='data doubt')
+        plt.legend()
         plt.show()
 
 
@@ -497,11 +502,12 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         a = []
         checkbox_position = list(enumerate(state))
         for i in range(len(checkbox_position)):
-            if checkbox_position[i][1] == '0' and qc[0][i] == '8':
+            if qc[0][i] == '8':
                 a.append(checkbox_position[i][0])
         return a
 
-    def get_uncertainty_position(self, state, qc):
+
+    def get_position_x(self, state, qc, qc_para):
         """
         用来存放checkbox的选择位置
         :param checkbox_state:
@@ -510,9 +516,24 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         a = []
         checkbox_position = list(enumerate(state))
         for i in range(len(checkbox_position)):
-            if checkbox_position[i][1] == '0' and qc[0][i] == '1':
+            if  qc[0][i] == str(qc_para):
                 a.append(checkbox_position[i][0])
         return a
+
+    def get_position_y(self, state, qc, qc_para):
+        """
+        用来存放checkbox的选择位置
+        :param checkbox_state:
+        :return: checkbox_state[2, 6, 45, 78, .............]
+        """
+        a = []
+        checkbox_position = list(enumerate(state))
+        for i in range(len(checkbox_position)):
+            if  qc[0][i] == str(qc_para):
+                a.append(int(checkbox_position[i][1]))
+        return a
+
+
 
     def Read_specif_qc(self, results, loop_1, checkbox_position):
         qc = []
@@ -625,7 +646,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
             qc_data = self.Read_specif_qc(results, loop_1, checkbox_position)
             exec('qc_' + str(loop_1) + '=' + str(qc_data))
             #print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
-            self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))
+            """self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))"""
             """self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))"""
             #窗口输出data数据
             picture_date.append(tuple(eval('list_' + str(loop_1))))
