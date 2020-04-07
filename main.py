@@ -376,19 +376,33 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             else:
                 self.textEdit.append('未找到文件，请放到根目录下')
 
-    def Printinfo_picture(self, picture_data):
+    def Printinfo_picture(self, picture_data, qc_data):
 
+        plt.title('Atmospheric data')
+        plt.xlabel('date time')
+        plt.ylabel('data')
         # 以0.2为间隔均匀采样
         len_X = int((((self.Read_dd_2()) - (self.Read_dd())).seconds/60) + (((self.Read_dd_2()) - (self.Read_dd())).days*1440))
-        try:
-            for i in range(len(picture_data)):
-                list_data = [int(j) for j in picture_data[i]]
-                plt.plot(list(list_data), '+',  label='Philadelphia')
-                plt.plot(self.get_Missing_position(picture_data[i]),[0]*len(self.get_Missing_position(picture_data[i])), 'o', color = 'black', label = 'Philadelphia')
-            plt.show()
 
-        except:
-            self.textEdit_2.append('图像输出失败')
+        for i in range(len(picture_data)):
+            list_data = [int(j) for j in picture_data[i]]
+            plt.plot(list(list_data), '+',  label= "xxxxxxxxx")
+            #画NULL的点
+            plt.plot(self.get_Missing_position(picture_data[i], qc_data),
+                     [0]*len(self.get_Missing_position(picture_data[i], qc_data)),
+                     'o', color = 'black', label = 'Philadelphia')
+            #画qc = 8的缺测点
+            plt.plot(self.get_measuring_position(picture_data[i], qc_data),
+                     [0] * len(self.get_measuring_position(picture_data[i], qc_data)), 'o', color='blue',
+                     label='Philadelphia')
+            # 画qc = 1的缺测点
+            plt.plot(self.get_uncertainty_position(picture_data[i], qc_data),
+                     [0] * len(self.get_uncertainty_position(picture_data[i], qc_data)), 'o', color='red',
+                     label='Philadelphia')
+
+        plt.show()
+
+
 
 
     def Chackbox(self):
@@ -461,7 +475,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                 a.append(i[0])
         return a
 
-    def get_Missing_position(self, state):
+    def get_Missing_position(self, state, qc):
         """
         用来存放checkbox的选择位置
         :param checkbox_state:
@@ -469,9 +483,35 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         """
         a = []
         checkbox_position = list(enumerate(state))
-        for i in checkbox_position:
-            if i [1] == '0':
-                a.append(i[0])
+        for i in range(len(checkbox_position)):
+            if checkbox_position[i][1] == '0' and qc[0][i] == 'N':
+                a.append(checkbox_position[i][0])
+        return a
+
+    def get_measuring_position(self, state, qc):
+        """
+        用来存放checkbox的选择位置
+        :param checkbox_state:
+        :return: checkbox_state[2, 6, 45, 78, .............]
+        """
+        a = []
+        checkbox_position = list(enumerate(state))
+        for i in range(len(checkbox_position)):
+            if checkbox_position[i][1] == '0' and qc[0][i] == '8':
+                a.append(checkbox_position[i][0])
+        return a
+
+    def get_uncertainty_position(self, state, qc):
+        """
+        用来存放checkbox的选择位置
+        :param checkbox_state:
+        :return: checkbox_state[2, 6, 45, 78, .............]
+        """
+        a = []
+        checkbox_position = list(enumerate(state))
+        for i in range(len(checkbox_position)):
+            if checkbox_position[i][1] == '0' and qc[0][i] == '1':
+                a.append(checkbox_position[i][0])
         return a
 
     def Read_specif_qc(self, results, loop_1, checkbox_position):
@@ -553,6 +593,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
         global  g_Missing
         global g_uncertainty
         picture_date = []
+        picture_qc = []
         check_num = 0
         Table_Name = self.lineEdit.text() + '_' + self.comboBox.currentText()+ '_' + self.lineEdit_2.text() + '_' + self.comboBox_2.currentText()
         beg_time = self.Read_dd()
@@ -585,17 +626,21 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
             exec('qc_' + str(loop_1) + '=' + str(qc_data))
             #print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
             self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))
-            self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))
+            """self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))"""
+            #窗口输出data数据
             picture_date.append(tuple(eval('list_' + str(loop_1))))
+            #窗口输出qc数据
+            picture_qc.append(tuple(eval('qc_' + str(loop_1))))
 
 
         self.textEdit_2.append('+++++++++++++++++++++++++共检索' + str(len(results)) + '条数据++++++++++++++++++++++++++++++++++')
         self.printinfo_MissingNum(db_data)
         mycursor.close()
         mydb.close()
-        self.Printinfo_picture(picture_date)
+        self.Printinfo_picture(picture_date, picture_qc)
 
-        """self.child = child_windows()
+        """self.child = child_windows()#
+        self.child = wingdows()
         self.child.show()"""
 
         """
