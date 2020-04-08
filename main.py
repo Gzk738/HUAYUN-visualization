@@ -389,18 +389,19 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         for i in range(len(picture_data)):
             list_data = [int(j) for j in picture_data[i]]
             plt.plot(list(list_data), '-',  label= "data")
-            #画NULL的点
+            """画数据丢失的点"""
             plt.plot(self.get_Missing_position(picture_data[i], qc_data),
                      [0]*len(self.get_Missing_position(picture_data[i], qc_data)),
                      'o', color = 'black', label = 'data loss')
-            #画qc = 8的缺测点
-            plt.plot(self.get_measuring_position(picture_data[i], qc_data),
-                     [0] * len(self.get_measuring_position(picture_data[i], qc_data)), 'o', color='green',
+            """画qc = 1的缺测点 缺测"""
+            plt.plot(self.get_measuring_position(picture_data[i], qc_data, miss),
+                     [0] * len(self.get_measuring_position(picture_data[i], qc_data, miss)), 'o', color='green',
                      label='missing measuring')
-            # 画qc = 1的缺测点
+            """qc = 8的缺测点 存疑"""
             plt.plot(self.get_position_x(picture_data[i], qc_data, uncertain),
                      self.get_position_y(picture_data[i], qc_data, uncertain), 'o', color='red',
                      label='data doubt')
+            """画qc == 1的缺测点 错误"""
             plt.plot(self.get_position_y(picture_data[i], qc_data, error),
                      self.get_position_y(picture_data[i], qc_data, error), 'o', color='red',
                      label='data doubt')
@@ -493,7 +494,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                 a.append(checkbox_position[i][0])
         return a
 
-    def get_measuring_position(self, state, qc):
+    def get_measuring_position(self, state, qc, miss):
         """
         用来存放checkbox的选择位置
         :param checkbox_state:
@@ -502,7 +503,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         a = []
         checkbox_position = list(enumerate(state))
         for i in range(len(checkbox_position)):
-            if qc[0][i] == '8':
+            if qc[0][i] == str(miss):
                 a.append(checkbox_position[i][0])
         return a
 
