@@ -407,7 +407,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             """画数据丢失的点"""
             plt.plot(self.get_Missing_position(picture_data[i], qc_data),
                      [0] * len(self.get_Missing_position(picture_data[i], qc_data)),
-                     'o', label='数据丢失 ' + str(len(self.get_Missing_position(picture_data[i], qc_data))))
+                     'o', label='数据丢失 ' + str(num_dataloss))
             """画qc = 1的缺测点 缺测"""
             plt.plot(self.get_measuring_position(picture_data[i], qc_data, miss),
                      [0] * len(self.get_measuring_position(picture_data[i], qc_data, miss)), 'o',
@@ -693,7 +693,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
 
         mycursor.close()
         mydb.close()
-        self.Printinfo_picture(checkbox_position , picture_date, picture_qc, num_data = str(len(results)), num_dataloss = ((int((self.Read_dd_2() - self.Read_dd()).seconds / 60)+1 - len(db_data)))  )
+        self.Printinfo_picture(checkbox_position , picture_date, picture_qc, num_data = str(len(results)), num_dataloss = ((int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int((self.Read_dd_2() - self.Read_dd()).seconds / 60)+1 - len(db_data)))  )
 
         """self.child = child_windows()#
         self.child = wingdows()
