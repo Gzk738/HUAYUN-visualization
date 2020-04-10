@@ -403,24 +403,24 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
 
         for i in range(len(picture_data)):
             list_data = [int(j) for j in picture_data[i]]
-            plt.plot(list(list_data), '-',  label= "data")
+            plt.plot(list(list_data), '-',  label= str((config[checkbox_position[i]])))
+            """画数据丢失的点"""
+            plt.plot(self.get_Missing_position(picture_data[i], qc_data),
+                     [0] * len(self.get_Missing_position(picture_data[i], qc_data)),
+                     'o', label='数据丢失 ' + str(len(self.get_Missing_position(picture_data[i], qc_data))))
             """画qc = 1的缺测点 缺测"""
             plt.plot(self.get_measuring_position(picture_data[i], qc_data, miss),
                      [0] * len(self.get_measuring_position(picture_data[i], qc_data, miss)), 'o',
-                     label='missing measuring = ' + str(
+                     label='缺测 ' + str(
                          len(self.get_measuring_position(picture_data[i], qc_data, uncertain))))
-            """画数据丢失的点"""
-            plt.plot(self.get_Missing_position(picture_data[i], qc_data),
-                     [0]*len(self.get_Missing_position(picture_data[i], qc_data)),
-                     'o',  label = 'data loss= '+str(len(self.get_Missing_position(picture_data[i], qc_data))))
             """qc = 8的缺测点 存疑"""
             plt.plot(self.get_position_x(picture_data[i], qc_data, uncertain),
                      self.get_position_y(picture_data[i], qc_data, uncertain), 'o',
-                     label='data doubt = '+str(len(self.get_measuring_position(picture_data[i], qc_data, uncertain))))
+                     label='存疑 '+str(len(self.get_measuring_position(picture_data[i], qc_data, uncertain))))
             """画qc == 2的缺测点 错误"""
             plt.plot(self.get_position_x(picture_data[i], qc_data, error),
                      self.get_position_y(picture_data[i], qc_data, error), 'o',
-                     label='data error = '+str(len(self.get_measuring_position(picture_data[i], qc_data, error))))
+                     label='错误 '+str(len(self.get_measuring_position(picture_data[i], qc_data, error))))
 
             """
             输出窗口提示信息
@@ -430,16 +430,13 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                                    self.get_position_x(picture_data[i], qc_data, uncertain),
                                    self.get_position_x(picture_data[i], qc_data, error)) == 1:
 
-                Prompt_message = '异常信息：' + str(config[checkbox_position[i]]) + '='
+                self.textEdit_2.append(str(config[checkbox_position[i]]) + '质控统计:')
                 if len(self.get_measuring_position(picture_data[i], qc_data, miss)) != 0:
-                    Prompt_message = Prompt_message + str(len(self.get_measuring_position(picture_data[i], qc_data, miss))) + '条缺测'
-                if len(self.get_Missing_position(picture_data[i], qc_data)) != 0:
-                    Prompt_message = Prompt_message + str(len(self.get_Missing_position(picture_data[i], qc_data))) + '条数据丢失'
+                    self.textEdit_2.append('    缺测  ' +str(len(self.get_measuring_position(picture_data[i], qc_data, miss))) )
                 if len(self.get_position_x(picture_data[i], qc_data, uncertain)) != 0:
-                    Prompt_message = Prompt_message + str(len(self.get_position_x(picture_data[i], qc_data, uncertain)))+ '条数据存疑'
+                    self.textEdit_2.append('    存疑  ' +str(len(self.get_position_x(picture_data[i], qc_data, uncertain))))
                 if len(self.get_position_x(picture_data[i], qc_data, error)) != 0:
-                    Prompt_message = Prompt_message + str(len(self.get_position_x(picture_data[i], qc_data, error)))+ '条数据错误'
-            self.textEdit_2.append(Prompt_message)
+                    self.textEdit_2.append('    错误  ' +str(len(self.get_position_x(picture_data[i], qc_data, error))) )
 
         plt.legend()
         plt.show()
@@ -498,7 +495,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             if str_line[(len(config))*2][checkbox_position[loop_1]] == '8':
                 g_Missing = g_Missing + 1
 
-        self.textEdit_2.append('   缺测：'+str(g_Missing)+'    存疑:' + str(g_uncertainty))
+        """self.textEdit_2.append('   缺测：'+str(g_Missing)+'    存疑:' + str(g_uncertainty))"""
 
         return a
 
