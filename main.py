@@ -632,8 +632,12 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
         for i in range(len(results_)):
             a = list(results_[i])
 
-            if a[2].find('///') != -1:
-                a[2] = str(a[2]).replace('///', '0')
+            if a[2].find('/') != -1:
+                for j in range(len(str(a[2]))):
+                    if a[2][j].find('/') != -1:
+                        a[2] = str(a[2]).replace('/', '0')
+
+
                 replaced_result.append(tuple(a))
             else:
                 replaced_result.append(tuple(a))
