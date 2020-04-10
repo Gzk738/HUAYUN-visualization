@@ -20,7 +20,10 @@ import numpy as np
 import pymysql
 import globalvar as gl
 import cryptography
-
+import chinese as ch
+import matplotlib
+plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
+plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 """
 gl.set_value('globalvar_Missing', 0)
 gl.set_value('globalvar_uncertainty', 0)
@@ -376,12 +379,12 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             else:
                 self.textEdit.append('未找到文件，请放到根目录下')
 
-    def Printinfo_picture(self, picture_data, qc_data):
+    def Printinfo_picture(self, picture_data, qc_data, num_data, num_dataloss):
         error = 2
         miss = 1
         uncertain = 8
         plt.title('Atmospheric data')
-        plt.xlabel('date time')
+        plt.xlabel('Retrieve of '+str(num_data)+ ' data, data loss = '+str(num_dataloss))
         plt.ylabel('data')
         # 以0.2为间隔均匀采样
         len_X = int((((self.Read_dd_2()) - (self.Read_dd())).seconds/60) + (((self.Read_dd_2()) - (self.Read_dd())).days*1440))
@@ -389,22 +392,24 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         for i in range(len(picture_data)):
             list_data = [int(j) for j in picture_data[i]]
             plt.plot(list(list_data), '-',  label= "data")
+            """画qc = 1的缺测点 缺测"""
+            plt.plot(self.get_measuring_position(picture_data[i], qc_data, miss),
+                     [0] * len(self.get_measuring_position(picture_data[i], qc_data, miss)), 'o',
+                     label='missing measuring = ' + str(
+                         len(self.get_measuring_position(picture_data[i], qc_data, uncertain))))
+
             """画数据丢失的点"""
             plt.plot(self.get_Missing_position(picture_data[i], qc_data),
                      [0]*len(self.get_Missing_position(picture_data[i], qc_data)),
-                     'o', color = 'black', label = 'data loss')
-            """画qc = 1的缺测点 缺测"""
-            plt.plot(self.get_measuring_position(picture_data[i], qc_data, miss),
-                     [0] * len(self.get_measuring_position(picture_data[i], qc_data, miss)), 'o', color='green',
-                     label='missing measuring')
+                     'o',  label = 'data loss= '+str(len(self.get_Missing_position(picture_data[i], qc_data))))
             """qc = 8的缺测点 存疑"""
             plt.plot(self.get_position_x(picture_data[i], qc_data, uncertain),
-                     self.get_position_y(picture_data[i], qc_data, uncertain), 'o', color='red',
-                     label='data doubt')
+                     self.get_position_y(picture_data[i], qc_data, uncertain), 'o',
+                     label='data doubt = '+str(len(self.get_measuring_position(picture_data[i], qc_data, uncertain))))
             """画qc == 1的缺测点 错误"""
-            plt.plot(self.get_position_y(picture_data[i], qc_data, error),
-                     self.get_position_y(picture_data[i], qc_data, error), 'o', color='red',
-                     label='data doubt')
+            plt.plot(self.get_position_x(picture_data[i], qc_data, error),
+                     self.get_position_y(picture_data[i], qc_data, error), 'o',
+                     label='data error = '+str(len(self.get_measuring_position(picture_data[i], qc_data, error))))
         plt.legend()
         plt.show()
 
@@ -458,10 +463,10 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         for row in results:
             str_line = str(row[2]).strip().split(',')[13:]
             a.append(str_line[checkbox_position[loop_1]*2+1])
-            qc.append((str_line[(len(config)-1)*2][checkbox_position[loop_1]]))
-            if str_line[(len(config)-1)*2][checkbox_position[loop_1]] == '1':
+            qc.append((str_line[(len(config))*2][checkbox_position[loop_1]]))
+            if str_line[(len(config))*2][checkbox_position[loop_1]] == '1':
                 g_uncertainty = g_uncertainty + 1
-            if str_line[(len(config)-1)*2][checkbox_position[loop_1]] == '8':
+            if str_line[(len(config))*2][checkbox_position[loop_1]] == '8':
                 g_Missing = g_Missing + 1
 
         self.textEdit_2.append('   缺测：'+str(g_Missing)+'    存疑:' + str(g_uncertainty))
@@ -541,7 +546,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         config = self.Read_config()
         for row in results:
             str_line = str(row[2]).strip().split(',')[13:]
-            qc.append((str_line[(len(config)-1)*2][checkbox_position[loop_1]]))
+            qc.append((str_line[(len(config))*2][checkbox_position[loop_1]]))
         return qc
 
     def Repair_result(self, result):
@@ -635,6 +640,12 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
         db_data = mycursor.fetchall()
         repare_data = self.Repair_result(db_data)
         results = self.Replace_result(repare_data)
+
+        #窗口提示信息
+        self.textEdit_2.append(
+            '+++++++++++++++++++++++++共检索' + str(len(results)) + '条数据++++++++++++++++++++++++++++++++++')
+        self.printinfo_MissingNum(db_data)
+
         checkbox_state = self.Chackbox()
         checkbox_position = self.get_Checkstatus_position(checkbox_state)
         for loop in range(len(checkbox_state)):
@@ -649,17 +660,14 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
             #print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
             """self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))"""
             """self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))"""
-            #窗口输出data数据
+
             picture_date.append(tuple(eval('list_' + str(loop_1))))
-            #窗口输出qc数据
+
             picture_qc.append(tuple(eval('qc_' + str(loop_1))))
 
-
-        self.textEdit_2.append('+++++++++++++++++++++++++共检索' + str(len(results)) + '条数据++++++++++++++++++++++++++++++++++')
-        self.printinfo_MissingNum(db_data)
         mycursor.close()
         mydb.close()
-        self.Printinfo_picture(picture_date, picture_qc)
+        self.Printinfo_picture(picture_date, picture_qc, num_data = str(len(results)), num_dataloss = (int((self.Read_dd_2() - self.Read_dd()).seconds / 60) - len(results))+1)
 
         """self.child = child_windows()#
         self.child = wingdows()
