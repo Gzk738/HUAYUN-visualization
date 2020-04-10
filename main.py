@@ -379,10 +379,22 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             else:
                 self.textEdit.append('未找到文件，请放到根目录下')
 
-    def Printinfo_picture(self, picture_data, qc_data, num_data, num_dataloss):
+    def abnormal_exist(self, qc_1, qc_miss, qc_8, qc_2):
+        error = 1
+        if len(qc_1) != 0:
+            return error
+        if len(qc_miss) != 0:
+            return error
+        if len(qc_8) != 0:
+            return error
+        if len(qc_2) != 0:
+            return error
+        return 0
+    def Printinfo_picture(self, checkbox_position , picture_data, qc_data, num_data, num_dataloss):
         error = 2
         miss = 1
         uncertain = 8
+        config = self.Read_config()
         plt.title('Atmospheric data')
         plt.xlabel('Retrieve of '+str(num_data)+ ' data, data loss = '+str(num_dataloss))
         plt.ylabel('data')
@@ -397,7 +409,6 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                      [0] * len(self.get_measuring_position(picture_data[i], qc_data, miss)), 'o',
                      label='missing measuring = ' + str(
                          len(self.get_measuring_position(picture_data[i], qc_data, uncertain))))
-
             """画数据丢失的点"""
             plt.plot(self.get_Missing_position(picture_data[i], qc_data),
                      [0]*len(self.get_Missing_position(picture_data[i], qc_data)),
@@ -406,14 +417,32 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             plt.plot(self.get_position_x(picture_data[i], qc_data, uncertain),
                      self.get_position_y(picture_data[i], qc_data, uncertain), 'o',
                      label='data doubt = '+str(len(self.get_measuring_position(picture_data[i], qc_data, uncertain))))
-            """画qc == 1的缺测点 错误"""
+            """画qc == 2的缺测点 错误"""
             plt.plot(self.get_position_x(picture_data[i], qc_data, error),
                      self.get_position_y(picture_data[i], qc_data, error), 'o',
                      label='data error = '+str(len(self.get_measuring_position(picture_data[i], qc_data, error))))
+
+            """
+            输出窗口提示信息
+            """
+            if self.abnormal_exist(self.get_measuring_position(picture_data[i], qc_data, miss),
+                                   self.get_Missing_position(picture_data[i], qc_data),
+                                   self.get_position_x(picture_data[i], qc_data, uncertain),
+                                   self.get_position_x(picture_data[i], qc_data, error)) == 1:
+
+                Prompt_message = '异常信息：' + str(config[checkbox_position[i]]) + '='
+                if len(self.get_measuring_position(picture_data[i], qc_data, miss)) != 0:
+                    Prompt_message = Prompt_message + str(len(self.get_measuring_position(picture_data[i], qc_data, miss))) + '条缺测'
+                if len(self.get_Missing_position(picture_data[i], qc_data)) != 0:
+                    Prompt_message = Prompt_message + str(len(self.get_Missing_position(picture_data[i], qc_data))) + '条数据丢失'
+                if len(self.get_position_x(picture_data[i], qc_data, uncertain)) != 0:
+                    Prompt_message = Prompt_message + str(len(self.get_position_x(picture_data[i], qc_data, uncertain)))+ '条数据存疑'
+                if len(self.get_position_x(picture_data[i], qc_data, error)) != 0:
+                    Prompt_message = Prompt_message + str(len(self.get_position_x(picture_data[i], qc_data, error)))+ '条数据错误'
+            self.textEdit_2.append(Prompt_message)
+
         plt.legend()
         plt.show()
-
-
 
 
     def Chackbox(self):
@@ -667,7 +696,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
 
         mycursor.close()
         mydb.close()
-        self.Printinfo_picture(picture_date, picture_qc, num_data = str(len(results)), num_dataloss = (int((self.Read_dd_2() - self.Read_dd()).seconds / 60) - len(results))+1)
+        self.Printinfo_picture(checkbox_position , picture_date, picture_qc, num_data = str(len(results)), num_dataloss = ((int((self.Read_dd_2() - self.Read_dd()).seconds / 60)+1 - len(db_data)))  )
 
         """self.child = child_windows()#
         self.child = wingdows()
