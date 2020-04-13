@@ -405,38 +405,38 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             list_data = [int(j) for j in picture_data[i]]
             plt.plot(list(list_data), '-',  label= str((config[checkbox_position[i]])))
             """画数据丢失的点"""
-            plt.plot(self.get_Missing_position(picture_data[i], qc_data),
-                     [0] * len(self.get_Missing_position(picture_data[i], qc_data)),
+            plt.plot(self.get_Missing_position(picture_data[i], qc_data[i]),
+                     [0] * len(self.get_Missing_position(picture_data[i], qc_data[i])),
                      'o', label='数据丢失 ' + str(num_dataloss))
             """画qc = 1的缺测点 缺测"""
-            plt.plot(self.get_measuring_position(picture_data[i], qc_data, miss),
-                     [0] * len(self.get_measuring_position(picture_data[i], qc_data, miss)), 'o',
+            plt.plot(self.get_measuring_position(picture_data[i], qc_data[i], miss),
+                     [0] * len(self.get_measuring_position(picture_data[i], qc_data[i], miss)), 'o',
                      label='缺测 ' + str(
-                         len(self.get_measuring_position(picture_data[i], qc_data, uncertain))))
+                         len(self.get_measuring_position(picture_data[i], qc_data[i], uncertain))))
             """qc = 8的缺测点 存疑"""
-            plt.plot(self.get_position_x(picture_data[i], qc_data, uncertain),
-                     self.get_position_y(picture_data[i], qc_data, uncertain), 'o',
-                     label='存疑 '+str(len(self.get_measuring_position(picture_data[i], qc_data, uncertain))))
+            plt.plot(self.get_position_x(picture_data[i], qc_data[i], uncertain),
+                     self.get_position_y(picture_data[i], qc_data[i], uncertain), 'o',
+                     label='存疑 '+str(len(self.get_measuring_position(picture_data[i], qc_data[i], uncertain))))
             """画qc == 2的缺测点 错误"""
-            plt.plot(self.get_position_x(picture_data[i], qc_data, error),
-                     self.get_position_y(picture_data[i], qc_data, error), 'o',
-                     label='错误 '+str(len(self.get_measuring_position(picture_data[i], qc_data, error))))
+            plt.plot(self.get_position_x(picture_data[i], qc_data[i], error),
+                     self.get_position_y(picture_data[i], qc_data[i], error), 'o',
+                     label='错误 '+str(len(self.get_measuring_position(picture_data[i], qc_data[i], error))))
 
             """
             输出窗口提示信息
             """
-            if self.abnormal_exist(self.get_measuring_position(picture_data[i], qc_data, miss),
-                                   self.get_Missing_position(picture_data[i], qc_data),
-                                   self.get_position_x(picture_data[i], qc_data, uncertain),
-                                   self.get_position_x(picture_data[i], qc_data, error)) == 1:
+            if self.abnormal_exist(self.get_measuring_position(picture_data, qc_data, miss),
+                                   self.get_Missing_position(picture_data, qc_data),
+                                   self.get_position_x(picture_data, qc_data, uncertain),
+                                   self.get_position_x(picture_data, qc_data, error)) == 1:
 
                 self.textEdit_2.append(str(config[checkbox_position[i]]) + '质控统计:')
                 if len(self.get_measuring_position(picture_data[i], qc_data, miss)) != 0:
-                    self.textEdit_2.append('    缺测  ' +str(len(self.get_measuring_position(picture_data[i], qc_data, miss))) )
+                    self.textEdit_2.append('    缺测  ' +str(len(self.get_measuring_position(picture_data[i], qc_data[i], miss))) )
                 if len(self.get_position_x(picture_data[i], qc_data, uncertain)) != 0:
-                    self.textEdit_2.append('    存疑  ' +str(len(self.get_position_x(picture_data[i], qc_data, uncertain))))
+                    self.textEdit_2.append('    存疑  ' +str(len(self.get_position_x(picture_data[i], qc_data[i], uncertain))))
                 if len(self.get_position_x(picture_data[i], qc_data, error)) != 0:
-                    self.textEdit_2.append('    错误  ' +str(len(self.get_position_x(picture_data[i], qc_data, error))) )
+                    self.textEdit_2.append('    错误  ' +str(len(self.get_position_x(picture_data[i], qc_data[i], error))) )
 
         plt.legend()
         plt.show()
@@ -521,7 +521,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         a = []
         checkbox_position = list(enumerate(state))
         for i in range(len(checkbox_position)):
-            if checkbox_position[i][1] == '0' and qc[0][i] == 'N':
+            if checkbox_position[i][1] == '0' and qc[i] == 'N':
                 a.append(checkbox_position[i][0])
         return a
 
@@ -534,7 +534,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         a = []
         checkbox_position = list(enumerate(state))
         for i in range(len(checkbox_position)):
-            if qc[0][i] == str(miss):
+            if qc[i] == str(miss):
                 a.append(checkbox_position[i][0])
         return a
 
@@ -548,7 +548,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         a = []
         checkbox_position = list(enumerate(state))
         for i in range(len(checkbox_position)):
-            if  qc[0][i] == str(qc_para):
+            if  qc[i] == str(qc_para):
                 a.append(checkbox_position[i][0])
         return a
 
@@ -561,7 +561,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         a = []
         checkbox_position = list(enumerate(state))
         for i in range(len(checkbox_position)):
-            if  qc[0][i] == str(qc_para):
+            if  qc[i] == str(qc_para):
                 a.append(int(checkbox_position[i][1]))
         return a
 
