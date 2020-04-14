@@ -344,6 +344,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         global dd_first
         global End_identification
         End_identification = 0
+        file_name = self.lineEdit_3.text()
         dd = self.Handle_datetime(self.dateTimeEdit.text())
         dd_2 = self.Handle_datetime(self.dateTimeEdit_2.text())
         if len(self.lineEdit.text()) == 0 or len(self.lineEdit_2.text()) == 0:
@@ -353,7 +354,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                 self.textEdit_2.append("提示：请输入ID号")
 
         else:
-            if os.path.isfile('ReceivedTofile-TCPSERVER-2019_11_5_10-04-51.DAT'):
+            if os.path.isfile(file_name):
                 self.textEdit_2.append("验证文件成功")
                 # 打开数据库连接-填入你Mysql的账号密码和端口
                 conn = pymysql.connect('localhost', 'root', '2667885', "wetherdate", charset='utf8')
@@ -392,8 +393,8 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         return 0
     def Printinfo_picture(self, checkbox_position , picture_data, qc_data, num_data, num_dataloss):
         error = 2
-        miss = 1
-        uncertain = 8
+        miss = 8
+        uncertain = 1
         config = self.Read_config()
         plt.title('Atmospheric data')
         plt.xlabel('Retrieve of '+str(num_data)+ ' data, data loss = '+str(num_dataloss))
@@ -408,16 +409,16 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             plt.plot(self.get_Missing_position(picture_data[i], qc_data[i]),
                      [0] * len(self.get_Missing_position(picture_data[i], qc_data[i])),
                      'o', label='数据丢失 ' + str(num_dataloss))
-            """画qc = 1的缺测点 缺测"""
+            """画qc = 8 缺测 """
             plt.plot(self.get_measuring_position(picture_data[i], qc_data[i], miss),
                      [0] * len(self.get_measuring_position(picture_data[i], qc_data[i], miss)), 'o',
                      label='缺测 ' + str(
-                         len(self.get_measuring_position(picture_data[i], qc_data[i], uncertain))))
-            """qc = 8的缺测点 存疑"""
+                         len(self.get_measuring_position(picture_data[i], qc_data[i], miss))))
+            """qc = 1 存疑"""
             plt.plot(self.get_position_x(picture_data[i], qc_data[i], uncertain),
                      self.get_position_y(picture_data[i], qc_data[i], uncertain), 'o',
                      label='存疑 '+str(len(self.get_measuring_position(picture_data[i], qc_data[i], uncertain))))
-            """画qc == 2的缺测点 错误"""
+            """画qc == 2 错误"""
             plt.plot(self.get_position_x(picture_data[i], qc_data[i], error),
                      self.get_position_y(picture_data[i], qc_data[i], error), 'o',
                      label='错误 '+str(len(self.get_measuring_position(picture_data[i], qc_data[i], error))))
@@ -674,7 +675,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
         #窗口提示信息
         self.textEdit_2.append(
             '+++++++++++++++++++++++++共检索' + str(len(results)) + '条数据++++++++++++++++++++++++++++++++++')
-        self.printinfo_MissingNum(db_data)
+        self.textEdit_2.append('数据缺失：' + str(((int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int((self.Read_dd_2() - self.Read_dd()).seconds / 60)+1 - len(db_data)))))
 
         checkbox_state = self.Chackbox()
         checkbox_position = self.get_Checkstatus_position(checkbox_state)
