@@ -353,7 +353,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
     <property name="text">
-     <string>输出图像（4）</string>
+     <string>生成报告（4）</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_5">
@@ -1000,7 +1000,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>742</width>
-     <height>22</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menusdf">

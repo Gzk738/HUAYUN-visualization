@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>202</width>
-    <height>57</height>
+    <width>208</width>
+    <height>73</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>数据清洗</string>
+   <string>提示</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>数据处理完毕，可以输出图像</string>
+    <string>已生成报告</string>
    </property>
   </widget>
  </widget>

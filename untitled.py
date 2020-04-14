@@ -247,7 +247,7 @@ class Ui_MainWindow(object):
         self.checkBox_24.setObjectName("checkBox_24")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 742, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 742, 18))
         self.menubar.setObjectName("menubar")
         self.menusdf = QtWidgets.QMenu(self.menubar)
         self.menusdf.setObjectName("menusdf")
@@ -321,7 +321,7 @@ class Ui_MainWindow(object):
 "</style></head><body style=\" font-family:\'SimSun\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'SimSun\';\">未读取配置文件 请点击读取按钮</span></p></body></html>"))
         self.pushButton_3.setText(_translate("MainWindow", "检索（3）"))
-        self.pushButton_4.setText(_translate("MainWindow", "输出图像（4）"))
+        self.pushButton_4.setText(_translate("MainWindow", "生成报告（4）"))
         self.pushButton_5.setText(_translate("MainWindow", "保存配置文件（5）"))
         self.pushButton_6.setText(_translate("MainWindow", "读取配置文件（6）"))
         self.checkBox_1.setText(_translate("MainWindow", "AAA"))

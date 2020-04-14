@@ -43,8 +43,8 @@ def config_INIT_():
     gl.set_value('globalvar_config', str_config)
     gl.get_value('globalvar_config')
     file.close()
-
-
+    """设置支持高分辨率屏幕自适应"""
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 
 
 def App__RUN__():
@@ -64,7 +64,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         self.setupUi(self)
         self.pushButton_2.clicked.connect(self.Save_datebase)
         self.pushButton_3.clicked.connect(self.DB_Search)
-        self.pushButton_4.clicked.connect(self.Printinfo_picture)
+        self.pushButton_4.clicked.connect(self.Creat_Report)
         self.pushButton_5.clicked.connect(self.config_write)
         self.pushButton_6.clicked.connect(self.config_show)
         self.pushButton_7.clicked.connect(self.clean_win)
@@ -449,7 +449,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                 self.textEdit_2.append('    错误  0')
 
         plt.legend(bbox_to_anchor=(1.01, 1), loc=2, borderaxespad=0., handleheight=1.675)
-        plt.savefig('testblueline.jpg')
+        plt.savefig('testblueline.jpg', dpi=200, bbox_inches='tight')
         plt.show()
 
 
@@ -732,7 +732,9 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         
         """
 
-
+    def Creat_Report(self):
+        self.child = child_windows()
+        self.child.show()
 
 
 
