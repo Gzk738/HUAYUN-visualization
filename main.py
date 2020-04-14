@@ -403,6 +403,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         len_X = int((((self.Read_dd_2()) - (self.Read_dd())).seconds/60) + (((self.Read_dd_2()) - (self.Read_dd())).days*1440))
 
         for i in range(len(picture_data)):
+            """画曲线"""
             list_data = [int(j) for j in picture_data[i]]
             plt.plot(list(list_data), '-',  label= str((config[checkbox_position[i]])))
             """画数据丢失的点"""
@@ -447,7 +448,8 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             else:
                 self.textEdit_2.append('    错误  0')
 
-        plt.legend()
+        plt.legend(bbox_to_anchor=(1.01, 1), loc=2, borderaxespad=0., handleheight=1.675)
+        plt.savefig('testblueline.jpg')
         plt.show()
 
 
