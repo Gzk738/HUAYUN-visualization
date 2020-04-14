@@ -22,6 +22,8 @@ import globalvar as gl
 import cryptography
 import chinese as ch
 import matplotlib
+from docx import Document
+from docx.shared import Inches
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 """
@@ -733,6 +735,15 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         """
 
     def Creat_Report(self):
+        images = 'testblueline.jpg'
+        """生成doc对象"""
+        doc = Document()
+        """添加文字"""
+        doc.add_paragraph('AAA')
+        """添加图, 设置宽度"""
+        doc.add_picture(images, width=Inches(5))
+        doc.save('word文档.docx')  # 保存路径
+
         self.child = child_windows()
         self.child.show()
 
