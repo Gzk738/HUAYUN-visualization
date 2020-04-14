@@ -426,19 +426,19 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             """
             输出窗口提示信息
             """
-            if self.abnormal_exist(self.get_measuring_position(picture_data, qc_data, miss),
-                                   self.get_Missing_position(picture_data, qc_data),
-                                   self.get_position_x(picture_data, qc_data, uncertain),
-                                   self.get_position_x(picture_data, qc_data, error)) == 1:
+            if self.abnormal_exist(self.get_measuring_position(picture_data[i], qc_data[i], miss),
+                                   self.get_Missing_position(picture_data[i], qc_data[i]),
+                                   self.get_position_x(picture_data[i], qc_data[i], uncertain),
+                                   self.get_position_x(picture_data[i], qc_data[i], error)) == 1:
 
                 self.textEdit_2.append(str(config[checkbox_position[i]]) + '质控统计:')
-                if len(self.get_measuring_position(picture_data[i], qc_data, miss)) != 0:
+                if len(self.get_measuring_position(picture_data[i], qc_data[i], miss)) != 0:
                     self.textEdit_2.append('    缺测  ' +str(len(self.get_measuring_position(picture_data[i], qc_data[i], miss))) )
-                if len(self.get_position_x(picture_data[i], qc_data, uncertain)) != 0:
+                if len(self.get_position_x(picture_data[i], qc_data[i], uncertain)) != 0:
                     self.textEdit_2.append('    存疑  ' +str(len(self.get_position_x(picture_data[i], qc_data[i], uncertain))))
-                if len(self.get_position_x(picture_data[i], qc_data, error)) != 0:
+                if len(self.get_position_x(picture_data[i], qc_data[i], error)) != 0:
                     self.textEdit_2.append('    错误  ' +str(len(self.get_position_x(picture_data[i], qc_data[i], error))) )
-
+            
         plt.legend()
         plt.show()
 
