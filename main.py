@@ -593,12 +593,20 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         dd = self.Read_dd()
         dd_2 = self.Read_dd_2()
 
-        while dd <= dd_2 and i < len(result):
-            if result [i][1] == dd:
-                results.append(result [i])
-                i = i + 1
+        while dd <= dd_2:
+            if i < len(result):
+                if result [i][1] == dd:
+                    results.append(result [i])
+                    i = i + 1
+                else:
+                    results.append(('id',dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,0,datetime,001,043,03,AAA,\
+0,AAA5i,0,AB10,0,AB20,0,AB30,0,AB40,0,AB50,0,ADA,0,ADB,0,AEA,0,AEA150,0,AEB,0,\
+AEB150,0,AEC,0,AEC150,0,AED,0,AED150,0,AEF,0,AEF150,0,AFA,0,AFA150,0,AFA150a,0,AFAa,\
+0,AFB,0,AFB150,0,AFC,0,AFC150,0,AFD,0,AFD150,0,AGA,0,AHA,0,AHA5,00,AHC,0,AHC5,00,\
+AJA,0,AJAa,0,AJAc,0,AJT,201911051005,ARG10,0,ARG20,0,ARG30,0,ARG40,0,ARG50,0,\
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
             else:
-                results.append(('id',dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,0,datetime,001,043,03,AAA,\
+                results.append(('id', dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,0,datetime,001,043,03,AAA,\
 0,AAA5i,0,AB10,0,AB20,0,AB30,0,AB40,0,AB50,0,ADA,0,ADB,0,AEA,0,AEA150,0,AEB,0,\
 AEB150,0,AEC,0,AEC150,0,AED,0,AED150,0,AEF,0,AEF150,0,AFA,0,AFA150,0,AFA150a,0,AFAa,\
 0,AFB,0,AFB150,0,AFC,0,AFC150,0,AFD,0,AFD150,0,AGA,0,AHA,0,AHA5,00,AHC,0,AHC5,00,\
@@ -607,13 +615,13 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
 
             dd = dd + datetime.timedelta(minutes=1)
 
-        if result[len(result)-1][1] != dd_2:
+        """if result[len(result)-1][1] != dd_2:
             results.append(('id',dd,'id',dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,0,datetime,001,043,03,AAA,\
 0,AAA5i,0,AB10,0,AB20,0,AB30,0,AB40,0,AB50,0,ADA,0,ADB,0,AEA,0,AEA150,0,AEB,0,\
 AEB150,0,AEC,0,AEC150,0,AED,0,AED150,0,AEF,0,AEF150,0,AFA,0,AFA150,0,AFA150a,0,AFAa,\
 0,AFB,0,AFB150,0,AFC,0,AFC150,0,AFD,0,AFD150,0,AGA,0,AHA,0,AHA5,00,AHC,0,AHC5,00,\
 AJA,0,AJAa,0,AJAc,0,AJT,201911051005,ARG10,0,ARG20,0,ARG30,0,ARG40,0,ARG50,0,\
-NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
 
         return results
 
