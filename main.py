@@ -426,19 +426,27 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             """
             输出窗口提示信息
             """
+            """#这个判断作用是是否有异常点，有异常点救出提示，无异常点就不输出了
             if self.abnormal_exist(self.get_measuring_position(picture_data[i], qc_data[i], miss),
                                    self.get_Missing_position(picture_data[i], qc_data[i]),
                                    self.get_position_x(picture_data[i], qc_data[i], uncertain),
-                                   self.get_position_x(picture_data[i], qc_data[i], error)) == 1:
+                                   self.get_position_x(picture_data[i], qc_data[i], error)) == 1:"""
 
-                self.textEdit_2.append(str(config[checkbox_position[i]]) + '质控统计:')
-                if len(self.get_measuring_position(picture_data[i], qc_data[i], miss)) != 0:
-                    self.textEdit_2.append('    缺测  ' +str(len(self.get_measuring_position(picture_data[i], qc_data[i], miss))) )
-                if len(self.get_position_x(picture_data[i], qc_data[i], uncertain)) != 0:
-                    self.textEdit_2.append('    存疑  ' +str(len(self.get_position_x(picture_data[i], qc_data[i], uncertain))))
-                if len(self.get_position_x(picture_data[i], qc_data[i], error)) != 0:
-                    self.textEdit_2.append('    错误  ' +str(len(self.get_position_x(picture_data[i], qc_data[i], error))) )
-            
+            self.textEdit_2.append(str(config[checkbox_position[i]]) + '质控统计:')
+            if len(self.get_measuring_position(picture_data[i], qc_data[i], miss)) != 0:
+                self.textEdit_2.append(
+                    '    缺测  ' +str(len(self.get_measuring_position(picture_data[i], qc_data[i], miss))) )
+            else :
+                self.textEdit_2.append('    缺测  0')
+            if len(self.get_position_x(picture_data[i], qc_data[i], uncertain)) != 0:
+                self.textEdit_2.append('    存疑  ' +str(len(self.get_position_x(picture_data[i], qc_data[i], uncertain))))
+            else:
+                self.textEdit_2.append('    存疑  0')
+            if len(self.get_position_x(picture_data[i], qc_data[i], error)) != 0:
+                self.textEdit_2.append('    错误  ' +str(len(self.get_position_x(picture_data[i], qc_data[i], error))) )
+            else:
+                self.textEdit_2.append('    错误  0')
+
         plt.legend()
         plt.show()
 
@@ -674,8 +682,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
 
         #窗口提示信息
         self.textEdit_2.append(
-            '+++++++++++++++++++++++++共检索' + str(len(results)) + '条数据++++++++++++++++++++++++++++++++++')
-        self.textEdit_2.append('数据缺失：' + str(((int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int((self.Read_dd_2() - self.Read_dd()).seconds / 60)+1 - len(db_data)))))
+            '++++++++++++++++共检索' + str(len(results)) + '条数据,其中数据缺失'+ str(((int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int((self.Read_dd_2() - self.Read_dd()).seconds / 60)+1 - len(db_data)))) + '条' +'++++++++++++++++++++++++')
 
         checkbox_state = self.Chackbox()
         checkbox_position = self.get_Checkstatus_position(checkbox_state)
