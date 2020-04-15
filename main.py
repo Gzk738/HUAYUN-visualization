@@ -45,11 +45,18 @@ def config_INIT_():
     gl.set_value('globalvar_config', str_config)
     gl.get_value('globalvar_config')
     file.close()
-    """设置支持高分辨率屏幕自适应"""
-    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+
 
 
 def App__RUN__():
+    """
+    主函数
+    :return:
+    """
+    """设置支持高分辨率屏幕自适应"""
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    """设置支持字体高分辨率自适应"""
+    QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     app = QApplication(sys.argv)
     window = Main_windows()
     window.show()
@@ -405,7 +412,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         """
         """重置画布"""
         plt.clf()
-        
+
         error = 2
         miss = 8
         uncertain = 1
@@ -467,6 +474,20 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         plt.show()
 
     def Save_picture(self, doc, checkbox_position , picture_data, qc_data, picture_name, num_data, num_dataloss):
+        """
+
+        :param doc:
+        :param checkbox_position:
+        :param picture_data:
+        :param qc_data:
+        :param picture_name:
+        :param num_data:
+        :param num_dataloss:
+        :return:
+        """
+        """重置画布"""
+        plt.clf()
+
         error = 2
         miss = 8
         uncertain = 1
@@ -779,10 +800,11 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         for loop in range(len(checkbox_state)):
             if checkbox_state[loop] == 1:
                 check_num = check_num + 1
+        picture_date = []
+        picture_qc = []
 
         for loop_1 in range(check_num):
-            picture_date = []
-            picture_qc = []
+
             data = self.Read_specif_ele(results, loop_1, checkbox_position)
             exec('list_'+str(loop_1)+'='+str(data))
             qc_data = self.Read_specif_qc(results, loop_1, checkbox_position)
@@ -873,8 +895,9 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         for i in range(len(checkbox_position)):
             """以选择了的checkbox位置信息来命名图片"""
             picture_name = str(checkbox_position[i]) + '.jpg'
+            picture_date = []
+            picture_qc = []
             for loop_1 in range(len(checkbox_position[i])):
-                picture_date = []
                 data = self.Read_specif_ele(results, loop_1, checkbox_position[i])
                 exec('list_' + str(loop_1) + '=' + str(data))
                 qc_data = self.Read_specif_qc(results, loop_1, checkbox_position[i])
@@ -899,7 +922,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
                                             self.Read_dd_2() - self.Read_dd()).seconds / 60) + 1 - len(db_data)))
                              )
             """把图片存入doc"""
-            doc.add_picture(picture_name, width=Inches(5))
+            doc.add_picture(picture_name, width=Inches(3))
         """关闭数据库"""
         mycursor.close()
         mydb.close()

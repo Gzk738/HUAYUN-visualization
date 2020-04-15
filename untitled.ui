@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>688</width>
-    <height>539</height>
+    <width>690</width>
+    <height>546</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>60</x>
       <y>110</y>
-      <width>41</width>
+      <width>51</width>
       <height>21</height>
      </rect>
     </property>
@@ -30,9 +30,9 @@
    <widget class="QDateTimeEdit" name="dateTimeEdit_2">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>550</x>
       <y>120</y>
-      <width>141</width>
+      <width>121</width>
       <height>22</height>
      </rect>
     </property>
@@ -63,7 +63,7 @@
    <widget class="QComboBox" name="comboBox">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>180</x>
       <y>110</y>
       <width>51</width>
       <height>22</height>
@@ -127,9 +127,9 @@
    <widget class="QDateTimeEdit" name="dateTimeEdit">
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>340</x>
       <y>120</y>
-      <width>141</width>
+      <width>121</width>
       <height>22</height>
      </rect>
     </property>
@@ -147,9 +147,9 @@
    <widget class="QLineEdit" name="lineEdit_2">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>60</x>
       <y>140</y>
-      <width>41</width>
+      <width>51</width>
       <height>21</height>
      </rect>
     </property>
@@ -160,7 +160,7 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>120</x>
       <y>110</y>
       <width>51</width>
       <height>16</height>
@@ -222,7 +222,7 @@
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>120</x>
       <y>140</y>
       <width>31</width>
       <height>16</height>
@@ -235,7 +235,7 @@
    <widget class="QComboBox" name="comboBox_2">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>180</x>
       <y>140</y>
       <width>51</width>
       <height>22</height>
@@ -999,7 +999,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>688</width>
+     <width>690</width>
      <height>18</height>
     </rect>
    </property>
