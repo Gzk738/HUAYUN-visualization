@@ -426,7 +426,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         for i in range(len(picture_data)):
             """画曲线"""
             list_data = [int(j) for j in picture_data[i]]
-            plt.plot(list(list_data), '-',  label= str((config[checkbox_position[i]])))
+            plt.plot(list(list_data), '.', markersize=1.5, label= str((config[checkbox_position[i]])))
             """画数据丢失的点"""
             plt.plot(self.get_Missing_position(picture_data[i], qc_data[i]),
                      [0] * len(self.get_Missing_position(picture_data[i], qc_data[i])),
