@@ -394,6 +394,18 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             return error
         return 0
     def Printinfo_picture(self, checkbox_position , picture_data, qc_data, num_data, num_dataloss):
+        """
+
+        :param checkbox_position:
+        :param picture_data:
+        :param qc_data:
+        :param num_data:
+        :param num_dataloss:
+        :return:
+        """
+        """重置画布"""
+        plt.clf()
+        
         error = 2
         miss = 8
         uncertain = 1
@@ -499,20 +511,20 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
 
             doc.add_paragraph(str(config[checkbox_position[i]]) + '质控统计:')
             if len(self.get_measuring_position(picture_data[i], qc_data[i], miss)) != 0:
-                self.textEdit_2.append(
+                doc.add_paragraph(
                     '    缺测  ' + str(len(self.get_measuring_position(picture_data[i], qc_data[i], miss))))
             else:
-                self.textEdit_2.append('    缺测  0')
+                doc.add_paragraph('    缺测  0')
             if len(self.get_position_x(picture_data[i], qc_data[i], uncertain)) != 0:
-                self.textEdit_2.append(
+                doc.add_paragraph(
                     '    存疑  ' + str(len(self.get_position_x(picture_data[i], qc_data[i], uncertain))))
             else:
-                self.textEdit_2.append('    存疑  0')
+                doc.add_paragraph('    存疑  0')
             if len(self.get_position_x(picture_data[i], qc_data[i], error)) != 0:
-                self.textEdit_2.append(
+                doc.add_paragraph(
                     '    错误  ' + str(len(self.get_position_x(picture_data[i], qc_data[i], error))))
             else:
-                self.textEdit_2.append('    错误  0')
+                doc.add_paragraph('    错误  0')
 
         plt.legend(bbox_to_anchor=(1.01, 1), loc=2, borderaxespad=0., handleheight=1.675)
         plt.savefig(picture_name, dpi=200, bbox_inches='tight')
@@ -769,6 +781,8 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
                 check_num = check_num + 1
 
         for loop_1 in range(check_num):
+            picture_date = []
+            picture_qc = []
             data = self.Read_specif_ele(results, loop_1, checkbox_position)
             exec('list_'+str(loop_1)+'='+str(data))
             qc_data = self.Read_specif_qc(results, loop_1, checkbox_position)
