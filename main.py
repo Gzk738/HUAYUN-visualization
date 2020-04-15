@@ -454,6 +454,69 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         plt.savefig('testblueline.jpg', dpi=200, bbox_inches='tight')
         plt.show()
 
+    def Save_picture(self, doc, checkbox_position , picture_data, qc_data, picture_name, num_data, num_dataloss):
+        error = 2
+        miss = 8
+        uncertain = 1
+        config = self.Read_config()
+        plt.title('Atmospheric data')
+        plt.xlabel('Retrieve of ' + str(num_data) + ' data, data loss = ' + str(num_dataloss))
+        plt.ylabel('data')
+        # 以0.2为间隔均匀采样
+        len_X = int((((self.Read_dd_2()) - (self.Read_dd())).seconds / 60) + (
+                    ((self.Read_dd_2()) - (self.Read_dd())).days * 1440))
+
+        for i in range(len(picture_data)):
+            """画曲线"""
+            list_data = [int(j) for j in picture_data[i]]
+            plt.plot(list(list_data), '-', label=str((config[checkbox_position[i]])))
+            """画数据丢失的点"""
+            plt.plot(self.get_Missing_position(picture_data[i], qc_data[i]),
+                     [0] * len(self.get_Missing_position(picture_data[i], qc_data[i])),
+                     'o', label='数据丢失 ' + str(num_dataloss))
+            """画qc = 8 缺测 """
+            plt.plot(self.get_measuring_position(picture_data[i], qc_data[i], miss),
+                     [0] * len(self.get_measuring_position(picture_data[i], qc_data[i], miss)), 'o',
+                     label='缺测 ' + str(
+                         len(self.get_measuring_position(picture_data[i], qc_data[i], miss))))
+            """qc = 1 存疑"""
+            plt.plot(self.get_position_x(picture_data[i], qc_data[i], uncertain),
+                     self.get_position_y(picture_data[i], qc_data[i], uncertain), 'o',
+                     label='存疑 ' + str(len(self.get_measuring_position(picture_data[i], qc_data[i], uncertain))))
+            """画qc == 2 错误"""
+            plt.plot(self.get_position_x(picture_data[i], qc_data[i], error),
+                     self.get_position_y(picture_data[i], qc_data[i], error), 'o',
+                     label='错误 ' + str(len(self.get_measuring_position(picture_data[i], qc_data[i], error))))
+
+            """
+            输出窗口提示信息
+            """
+            """#这个判断作用是是否有异常点，有异常点救出提示，无异常点就不输出了
+            if self.abnormal_exist(self.get_measuring_position(picture_data[i], qc_data[i], miss),
+                                   self.get_Missing_position(picture_data[i], qc_data[i]),
+                                   self.get_position_x(picture_data[i], qc_data[i], uncertain),
+                                   self.get_position_x(picture_data[i], qc_data[i], error)) == 1:"""
+
+            doc.add_paragraph(str(config[checkbox_position[i]]) + '质控统计:')
+            if len(self.get_measuring_position(picture_data[i], qc_data[i], miss)) != 0:
+                self.textEdit_2.append(
+                    '    缺测  ' + str(len(self.get_measuring_position(picture_data[i], qc_data[i], miss))))
+            else:
+                self.textEdit_2.append('    缺测  0')
+            if len(self.get_position_x(picture_data[i], qc_data[i], uncertain)) != 0:
+                self.textEdit_2.append(
+                    '    存疑  ' + str(len(self.get_position_x(picture_data[i], qc_data[i], uncertain))))
+            else:
+                self.textEdit_2.append('    存疑  0')
+            if len(self.get_position_x(picture_data[i], qc_data[i], error)) != 0:
+                self.textEdit_2.append(
+                    '    错误  ' + str(len(self.get_position_x(picture_data[i], qc_data[i], error))))
+            else:
+                self.textEdit_2.append('    错误  0')
+
+        plt.legend(bbox_to_anchor=(1.01, 1), loc=2, borderaxespad=0., handleheight=1.675)
+        plt.savefig(picture_name, dpi=200, bbox_inches='tight')
+
 
     def Chackbox(self):
         checkbox_state = []
@@ -696,8 +759,11 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         self.textEdit_2.append(
             '++++++++++++++++共检索' + str(len(results)) + '条数据,其中数据缺失'+ str(((int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int((self.Read_dd_2() - self.Read_dd()).seconds / 60)+1 - len(db_data)))) + '条' +'++++++++++++++++++++++++')
 
+        """获得checkbox页面的勾选的原始状态"""
         checkbox_state = self.Chackbox()
+        """提取checkbox勾选的位置到列表"""
         checkbox_position = self.get_Checkstatus_position(checkbox_state)
+
         for loop in range(len(checkbox_state)):
             if checkbox_state[loop] == 1:
                 check_num = check_num + 1
@@ -717,7 +783,11 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
 
         mycursor.close()
         mydb.close()
-        self.Printinfo_picture(checkbox_position , picture_date, picture_qc, num_data = str(len(results)), num_dataloss = ((int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int((self.Read_dd_2() - self.Read_dd()).seconds / 60)+1 - len(db_data)))  )
+        self.Printinfo_picture(checkbox_position ,
+                               picture_date,
+                               picture_qc,
+                               num_data = str(len(results)),
+                               num_dataloss = ((int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int((self.Read_dd_2() - self.Read_dd()).seconds / 60)+1 - len(db_data)))  )
 
         """self.child = child_windows()#
         self.child = wingdows()
@@ -735,14 +805,95 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         """
 
     def Creat_Report(self):
-        images = 'testblueline.jpg'
-        """生成doc对象"""
+        """
+        此函数为按钮生成报告的函数
+        :return:
+        """
+        global g_Missing
+        global g_uncertainty
         doc = Document()
+        picture_date = []
+        picture_qc = []
+        check_num = 0
+        Table_Name = self.lineEdit.text() + '_' + self.comboBox.currentText() + '_' + self.lineEdit_2.text() + '_' + self.comboBox_2.currentText()
+        beg_time = self.Read_dd()
+        end_time = self.Read_dd_2()
+        mydb = pymysql.connect(
+            host="localhost",
+            user="root",
+            passwd="2667885",
+            database="wetherdate"
+        )
+        mycursor = mydb.cursor()
+        sql = "SELECT * FROM TABLE_NAME WHERE datetime >= '%s' and datetime <='%s'" % (beg_time, end_time)
+        sql = self.Table_to_sql(sql, Table_Name)
+        mycursor.execute(sql)
+        # fetchall() 获取所有记录
+        # Struct_date = self.Creat_Struct_date()
+        db_data = mycursor.fetchall()
+        repare_data = self.Repair_result(db_data)
+        results = self.Replace_result(repare_data)
+
+        """生成需要写入报告的提示信息"""
+        str_word = (
+            '++++++++++++++++共检索' + str(len(results)) + '条数据,其中数据缺失' + str(((
+                        int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int(
+                    (self.Read_dd_2() - self.Read_dd()).seconds / 60) + 1 - len(
+                    db_data)))) + '条' + '++++++++++++++++++++++++')
+
+
+        """生成checkbox勾选的位置到列表"""
+        checkbox_position = []
+
+        checkbox_position.append([0])
+        checkbox_position.append([2,3,4,5,6])
+        checkbox_position.append([7])
+        checkbox_position.append([9,10])
+        checkbox_position.append([29])
+        checkbox_position.append([30])
+        checkbox_position.append([32])
+        checkbox_position.append([34])
+        checkbox_position.append([38,39,40,41,42])
+
+
+        for i in range(len(checkbox_position)):
+            """以选择了的checkbox位置信息来命名图片"""
+            picture_name = str(checkbox_position[i]) + '.jpg'
+            for loop_1 in range(len(checkbox_position[i])):
+                picture_date = []
+                data = self.Read_specif_ele(results, loop_1, checkbox_position[i])
+                exec('list_' + str(loop_1) + '=' + str(data))
+                qc_data = self.Read_specif_qc(results, loop_1, checkbox_position[i])
+                exec('qc_' + str(loop_1) + '=' + str(qc_data))
+                # print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
+                """self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))"""
+                """self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))"""
+
+                picture_date.append(tuple(eval('list_' + str(loop_1))))
+
+                picture_qc.append(tuple(eval('qc_' + str(loop_1))))
+
+
+            """把图像保存成jpg文件"""
+            self.Save_picture(doc,
+                             checkbox_position[i],
+                             picture_date,
+                             picture_qc,
+                             picture_name,
+                             num_data = str(len(results)),
+                             num_dataloss = ((int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int((
+                                            self.Read_dd_2() - self.Read_dd()).seconds / 60) + 1 - len(db_data)))
+                             )
+            """把图片存入doc"""
+            doc.add_picture(picture_name, width=Inches(5))
+        """关闭数据库"""
+        mycursor.close()
+        mydb.close()
+
         """添加文字"""
-        doc.add_paragraph('AAA')
+        doc.add_paragraph(str_word)
         """添加图, 设置宽度"""
-        doc.add_picture(images, width=Inches(5))
-        doc.save('word文档.docx')  # 保存路径
+        doc.save(self.lineEdit.text()+'.docx')
 
         self.child = child_windows()
         self.child.show()
