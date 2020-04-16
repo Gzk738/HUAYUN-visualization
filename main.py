@@ -22,6 +22,7 @@ import globalvar as gl
 import cryptography
 import chinese as ch
 import matplotlib
+import os
 from docx import Document
 from docx.shared import Inches
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
@@ -62,10 +63,15 @@ def App__RUN__():
     window.show()
     sys.exit(app.exec_())
 
-class child_windows(QDialog, Ui_Form):
+class child_windows(QDialog, Ui_Dialog):
     def __init__(self):
         super(child_windows, self).__init__()
         self.setupUi(self)
+        self.pushButton.clicked.connect(self.open_dir)
+
+    def open_dir(self):
+        os.system("start explorer D:\software\PyCharm Community Edition 2019.3.3\project\li_ping5.1\报告")  # c:为要打开c盘
+
 
 class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口，这里会不同
     def __init__(self):
@@ -425,7 +431,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
 
         for i in range(len(picture_data)):
             """画曲线"""
-            list_data = [int(j) for j in picture_data[i]]
+            list_data = [float(j) for j in picture_data[i]]
             plt.plot(list(list_data), '.', markersize=1.5, label= str((config[checkbox_position[i]])))
             """画数据丢失的点"""
             plt.plot(self.get_Missing_position(picture_data[i], qc_data[i]),
@@ -473,6 +479,50 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         plt.savefig('testblueline.jpg', dpi=200, bbox_inches='tight')
         plt.show()
 
+    def Real_ele(self, ele):
+        if ele == 'AAA':
+            return '温度'
+        if ele == 'AB10':
+            return '地温1层'
+        if ele == 'AB20':
+            return '地温2层'
+        if ele == 'AB30':
+            return '地温3层'
+        if ele == 'AB40':
+            return '地温4层'
+        if ele == 'AB50':
+            return '地温5层'
+        if ele == 'ADA':
+            return '湿度'
+        if ele == 'AB10':
+            return '地温1层'
+        if ele == 'AFA':
+            return '10米风'
+        if ele == 'AFA150':
+            return '1.5米风'
+        if ele == 'AGA':
+            return '气压'
+        if ele == 'AHA':
+            return '翻斗雨'
+        if ele == 'AHC':
+            return '称重雨量'
+        if ele == 'AJA':
+            return '辐射'
+        if ele == 'ARG10':
+            return '土壤水分1层'
+        if ele == 'ARG20':
+            return '土壤水分2层'
+        if ele == 'ARG30':
+            return '土壤水分3层'
+        if ele == 'ARG40':
+            return '土壤水分4层'
+        if ele == 'ARG50':
+            return '土壤水分5层'
+        return '未找到对应元素'
+
+
+
+
     def Save_picture(self, doc, checkbox_position , picture_data, qc_data, picture_name, num_data, num_dataloss):
         """
 
@@ -500,8 +550,12 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                     ((self.Read_dd_2()) - (self.Read_dd())).days * 1440))
 
         for i in range(len(picture_data)):
+            """如果是气压，数据都除10000"""
+            if config[checkbox_position[i]] == 'AGA':
+                a = [float(q)/10000 for q in picture_data[i]]
+                picture_data[i] = a
             """画曲线"""
-            list_data = [int(j) for j in picture_data[i]]
+            list_data = [float(j) for j in picture_data[i]]
             plt.plot(list(list_data), '-', label=str((config[checkbox_position[i]])))
             """画数据丢失的点"""
             plt.plot(self.get_Missing_position(picture_data[i], qc_data[i]),
@@ -530,7 +584,8 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                                    self.get_position_x(picture_data[i], qc_data[i], uncertain),
                                    self.get_position_x(picture_data[i], qc_data[i], error)) == 1:"""
 
-            doc.add_paragraph(str(config[checkbox_position[i]]) + '质控统计:')
+            doc.add_paragraph(self.Real_ele(str(config[checkbox_position[i]])) + '统计:')
+            doc.add_paragraph('    数据丢失  ' + str(num_dataloss))
             if len(self.get_measuring_position(picture_data[i], qc_data[i], miss)) != 0:
                 doc.add_paragraph(
                     '    缺测  ' + str(len(self.get_measuring_position(picture_data[i], qc_data[i], miss))))
@@ -675,6 +730,16 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         return a
 
 
+    def Read_inter(self):
+        a = self.comboBox_3.currentIndex()
+        if a == 0:
+            return 1
+        if a == 1:
+            return 5
+        if a == 2:
+            return 10
+        if a == 3:
+            return 60
 
     def Read_specif_qc(self, results, loop_1, checkbox_position):
         qc = []
@@ -711,7 +776,7 @@ AEB150,0,AEC,0,AEC150,0,AED,0,AED150,0,AEF,0,AEF150,0,AFA,0,AFA150,0,AFA150a,0,A
 AJA,0,AJAa,0,AJAc,0,AJT,201911051005,ARG10,0,ARG20,0,ARG30,0,ARG40,0,ARG50,0,\
 NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
 
-            dd = dd + datetime.timedelta(minutes=1)
+            dd = dd + datetime.timedelta(minutes = self.Read_inter())
 
         """if result[len(result)-1][1] != dd_2:
             results.append(('id',dd,'id',dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,0,datetime,001,043,03,AAA,\
@@ -839,6 +904,11 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         plt.show()
         
         """
+    def Name_datetime(self, str_datetime):
+        str_datetime = str_datetime.replace(' ', '_')
+        str_datetime = str_datetime.replace(':', '_')
+        return str_datetime
+
 
     def Creat_Report(self):
         """
@@ -872,11 +942,13 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
 
         """生成需要写入报告的提示信息"""
         str_word = (
-            '++++++++++++++++共检索' + str(len(results)) + '条数据,其中数据缺失' + str(((
+            '                共检索' + str(len(results)) + '条数据,其中数据缺失' + str(((
                         int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int(
                     (self.Read_dd_2() - self.Read_dd()).seconds / 60) + 1 - len(
-                    db_data)))) + '条' + '++++++++++++++++++++++++')
-
+                    db_data)))) + '条' + '                    ')
+        """添加文字到docx"""
+        doc.add_paragraph(str_word)
+        doc.add_paragraph('时间：' + str((self.Read_dd())) + '  致  ' + str((self.Read_dd_2())))
 
         """生成checkbox勾选的位置到列表"""
         checkbox_position = []
@@ -922,15 +994,13 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
                                             self.Read_dd_2() - self.Read_dd()).seconds / 60) + 1 - len(db_data)))
                              )
             """把图片存入doc"""
-            doc.add_picture(picture_name, width=Inches(3))
+            doc.add_picture(picture_name, width=Inches(6))
         """关闭数据库"""
         mycursor.close()
         mydb.close()
 
-        """添加文字"""
-        doc.add_paragraph(str_word)
         """添加图, 设置宽度"""
-        doc.save(self.lineEdit.text()+'.docx')
+        doc.save('报告\\' + self.lineEdit.text() +'站' + str(self.Name_datetime(str(self.Read_dd())))+'至' + str(self.Name_datetime(str(self.Read_dd_2())))+'报告'+'.docx')
 
         self.child = child_windows()
         self.child.show()
