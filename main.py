@@ -1,4 +1,5 @@
-# -*- coding:utf-8 -*-
+# coding: utf-8
+
 '''
 @File    :   $main.py
 @Contact :   798412226@qq.com
@@ -25,6 +26,8 @@ import matplotlib
 import os
 from docx import Document
 from docx.shared import Inches
+import importlib
+importlib.reload(sys)
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 """
@@ -375,7 +378,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                 conn = pymysql.connect('localhost', 'root', '2667885', "wetherdate", charset='utf8')
                 # 使用 cursor() 方法创建一个游标对象 cursor
                 mycursor = conn.cursor()
-                file = open('ReceivedTofile-TCPSERVER-2019_11_5_10-04-51.DAT', mode='r+', encoding='UTF-8')
+                file = open(file_name, mode='r+', encoding='UTF-8')
                 flog = 0
                 for line in file.readlines() :
                     if len(line) != 0:
