@@ -757,6 +757,8 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         results = []
         #delta = timedelta(minutes = 1)
         dd = self.Read_dd()
+        if len(result) != 0:
+            dd = result [i][1]
         dd_2 = self.Read_dd_2()
 
         while dd <= dd_2:
