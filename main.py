@@ -927,69 +927,72 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         """
         doc = Document()
         check_num = 0
-        db_data = self.Query_database()
-        repare_data = self.Repair_result(db_data)
-        results = self.Replace_result(repare_data)
+        try:
+            db_data = self.Query_database()
 
-        """生成需要写入报告的提示信息"""
-        str_word = (
-            '                共检索' + str(len(results)) + '条数据,其中数据缺失' + str(self.Dataloss_Num(db_data)) + '条' + '                    ')
-        """添加文字到docx"""
-        doc.add_paragraph(str_word)
-        doc.add_paragraph('时间：' + str((self.Read_dd())) + '  至  ' + str((self.Read_dd_2())))
+            repare_data = self.Repair_result(db_data)
+            results = self.Replace_result(repare_data)
 
-        """生成checkbox勾选的位置到列表"""
-        checkbox_position = []
+            """生成需要写入报告的提示信息"""
+            str_word = (
+                '                共检索' + str(len(results)) + '条数据,其中数据缺失' + str(self.Dataloss_Num(db_data)) + '条' + '                    ')
+            """添加文字到docx"""
+            doc.add_paragraph(str_word)
+            doc.add_paragraph('时间：' + str((self.Read_dd())) + '  至  ' + str((self.Read_dd_2())))
 
-        checkbox_position.append([0])
-        checkbox_position.append([2,3,4,5,6])
-        checkbox_position.append([7])
-        checkbox_position.append([9,10])
-        checkbox_position.append([29])
-        checkbox_position.append([30])
-        checkbox_position.append([32])
-        checkbox_position.append([34])
-        checkbox_position.append([38,39,40,41,42])
+            """生成checkbox勾选的位置到列表"""
+            checkbox_position = []
 
-
-        for i in range(len(checkbox_position)):
-            """以选择了的checkbox位置信息来命名图片"""
-            picture_name = str(checkbox_position[i]) + '.jpg'
-            picture_date = []
-            picture_qc = []
-            for loop_1 in range(len(checkbox_position[i])):
-                data = self.Read_specif_ele(results, loop_1, checkbox_position[i])
-                exec('list_' + str(loop_1) + '=' + str(data))
-                qc_data = self.Read_specif_qc(results, loop_1, checkbox_position[i])
-                exec('qc_' + str(loop_1) + '=' + str(qc_data))
-                # print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
-                """self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))"""
-                """self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))"""
-
-                picture_date.append(tuple(eval('list_' + str(loop_1))))
-
-                picture_qc.append(tuple(eval('qc_' + str(loop_1))))
+            checkbox_position.append([0])
+            checkbox_position.append([2,3,4,5,6])
+            checkbox_position.append([7])
+            checkbox_position.append([9,10])
+            checkbox_position.append([29])
+            checkbox_position.append([30])
+            checkbox_position.append([32])
+            checkbox_position.append([34])
+            checkbox_position.append([38,39,40,41,42])
 
 
-            """把图像保存成jpg文件"""
-            self.Save_picture(doc,
-                             checkbox_position[i],
-                             picture_date,
-                             picture_qc,
-                             picture_name,
-                             num_data = str(len(results)),
-                             num_dataloss = self.Dataloss_Num(db_data)
-                             )
-            """把图片存入doc"""
-            doc.add_picture(picture_name, width=Inches(6))
+            for i in range(len(checkbox_position)):
+                """以选择了的checkbox位置信息来命名图片"""
+                picture_name = str(checkbox_position[i]) + '.jpg'
+                picture_date = []
+                picture_qc = []
+                for loop_1 in range(len(checkbox_position[i])):
+                    data = self.Read_specif_ele(results, loop_1, checkbox_position[i])
+                    exec('list_' + str(loop_1) + '=' + str(data))
+                    qc_data = self.Read_specif_qc(results, loop_1, checkbox_position[i])
+                    exec('qc_' + str(loop_1) + '=' + str(qc_data))
+                    # print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
+                    """self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))"""
+                    """self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))"""
 
-        """添加图, 设置宽度"""
-        doc.save('报告\\' + self.lineEdit.text() +'站' + str(self.Name_datetime(str(self.Read_dd())))+'至' + str(self.Name_datetime(str(self.Read_dd_2())))+'报告'+'.docx')
+                    picture_date.append(tuple(eval('list_' + str(loop_1))))
 
-        self.child = child_windows()
-        self.child.show()
+                    picture_qc.append(tuple(eval('qc_' + str(loop_1))))
 
 
+                """把图像保存成jpg文件"""
+                self.Save_picture(doc,
+                                 checkbox_position[i],
+                                 picture_date,
+                                 picture_qc,
+                                 picture_name,
+                                 num_data = str(len(results)),
+                                 num_dataloss = self.Dataloss_Num(db_data)
+                                 )
+                """把图片存入doc"""
+                doc.add_picture(picture_name, width=Inches(6))
+
+            """添加图, 设置宽度"""
+            doc.save('报告\\' + self.lineEdit.text() +'站' + str(self.Name_datetime(str(self.Read_dd())))+'至' + str(self.Name_datetime(str(self.Read_dd_2())))+'报告'+'.docx')
+
+            self.child = child_windows()
+            self.child.show()
+
+        except:
+            self.textEdit_2.append('请检查区站号，数据库未找到此区站号的数据')
 
 if __name__ == "__main__":
 
