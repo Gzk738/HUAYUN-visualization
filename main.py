@@ -190,43 +190,43 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                 self.textEdit_2.append("未匹配到区站号")
             return 0
 
-    def DI_check(self , str_line ):
+    def DI_check(self , str_line, line):
         global flog
         a = ''.join(str_line[7:8])
         b = self.comboBox.currentText()
         if a == b:
             return 1
         else:
-            self.textEdit_2.append("第"+str(flog)+"未找DI")
+            self.textEdit_2.append("第"+str(line)+"未找DI")
             return 0
 
-    def ID_ckeck(self, str_line ):
+    def ID_ckeck(self, str_line, line):
         global folg
         a =  ''.join(str_line[8:9])
         b = self.lineEdit_2.text()
         if a == b:
             return 1
         else:
-            self.textEdit_2.append("第"+str(flog)+"未找ID")
+            self.textEdit_2.append("第"+str(line)+"未找ID")
             return 0
 
-    def frame_check(self, str_line ):
+    def frame_check(self, str_line, line):
         global flog
         a = ''.join(str_line[10:11])
         b =  self.comboBox_2.currentText()
         if a == b:
             return 1
         else:
-            self.textEdit_2.append("第"+str(flog)+"未找数据帧")
+            self.textEdit_2.append("第"+str(line)+"未找数据帧")
             return 0
 
-    def StatNum_check(self, str_line ):
+    def StatNum_check(self, str_line, line):
         a = ''.join(str_line[2:3])
         b = self.lineEdit.text()
         if a == b:
             return 1
         else:
-            self.textEdit_2.append("第"+str(flog)+"未找到台站号")
+            self.textEdit_2.append("第"+str(line)+"未找到台站号")
             return 0
 
     def datetime_check(self , str_line  , dd_jure , dd_inter ):
@@ -361,6 +361,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         global dd_jurefirst
         global dd_first
         global End_identification
+        line_num = 0
         End_identification = 0
         file_name = self.lineEdit_3.text()
         dd = self.Handle_datetime(self.dateTimeEdit.text())
@@ -385,12 +386,13 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                         str_line = line.strip().split(',')
                         if len(str_line) >= 11:
                             if self.Str_Compare(str_line):
-                                dd_jure = self.Handle_dd_jure(str_line)
-                                if ( self.ID_ckeck(str_line )) and (self.DI_check(str_line )) and (self.frame_check(str_line)) and (self.StatNum_check(str_line )):
+                                """dd_jure = self.Handle_dd_jure(str_line)"""
+                                if ((self.StatNum_check(str_line, line_num) and (self.DI_check(str_line, line_num)) and self.ID_ckeck(str_line, line_num)) and (self.frame_check(str_line, line_num))):
                                     self.save_SQL_asline(line, str_line, mycursor, conn)
 
                             else:
                                 break
+                    line_num = line_num + 1
                 file.close()
                 mycursor.close()
                 conn.close()
@@ -541,6 +543,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         """重置画布"""
         plt.clf()
 
+        lost = 'N'
         error = 2
         miss = 8
         uncertain = 1
@@ -557,16 +560,21 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             if config[checkbox_position[i]] == 'AGA':
                 a = [float(q)/10000 for q in picture_data[i]]
                 picture_data[i] = a
+                q = 0
+                for q in range(len(picture_data[i])):
+                    if picture_data[i][q] == 0:
+                        picture_data[i][q] = 0.9
+
             """画曲线"""
             list_data = [float(j) for j in picture_data[i]]
             plt.plot(list(list_data), '-', label=str((config[checkbox_position[i]])))
             """画数据丢失的点"""
-            plt.plot(self.get_Missing_position(picture_data[i], qc_data[i]),
-                     [0] * len(self.get_Missing_position(picture_data[i], qc_data[i])),
+            plt.plot(self.get_position_x(picture_data[i], qc_data[i], lost),
+                     self.get_position_y(picture_data[i], qc_data[i], lost),
                      'o', label='数据丢失 ' + str(num_dataloss))
             """画qc = 8 缺测 """
             plt.plot(self.get_position_x(picture_data[i], qc_data[i], miss),
-                     [0] * len(self.get_position_y(picture_data[i], qc_data[i], miss)), 'o',
+                     self.get_position_y(picture_data[i], qc_data[i], miss), 'o',
                      label='缺测 ' + str(
                          len(self.get_position_x(picture_data[i], qc_data[i], miss))))
             """qc = 1 存疑"""
@@ -679,19 +687,6 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                 a.append(i[0])
         return a
 
-    def get_Missing_position(self, state, qc):
-        """
-        用来存放checkbox的选择位置
-        :param checkbox_state:
-        :return: checkbox_state[2, 6, 45, 78, .............]
-        """
-        a = []
-        data = list(enumerate(state))
-        for i in range(len(data)):
-            if float(data[i][1]) == 0 and qc[i] == 'N':
-                a.append(data[i][0])
-        return a
-
 
 
 
@@ -718,7 +713,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         data = list(enumerate(state))
         for i in range(len(data)):
             if  qc[i] == str(qc_para):
-                a.append(int(data[i][1]))
+                a.append(float(data[i][1]))
         return a
 
 
