@@ -757,8 +757,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         results = []
         #delta = timedelta(minutes = 1)
         dd = self.Read_dd()
-        if len(result) != 0:
-            dd = result [i][1]
+
         dd_2 = self.Read_dd_2()
 
         while dd <= dd_2:
@@ -860,7 +859,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
 
         #窗口提示信息
         self.textEdit_2.append(
-            '++++++++++++++++共检索' + str(len(results)) + '条数据,其中数据缺失'+ str(((int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int((self.Read_dd_2() - self.Read_dd()).seconds / 60)+1 - len(db_data)))) + '条' +'++++++++++++++++++++++++')
+            '++++++++++++++++共检索' + str(len(results)) + '条数据,其中数据缺失'+ str(self.Dataloss_Num(db_data)) + '条' +'++++++++++++++++++++++++')
 
         """获得checkbox页面的勾选的原始状态"""
         checkbox_state = self.Chackbox()
@@ -893,7 +892,8 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
                                picture_date,
                                picture_qc,
                                num_data = str(len(results)),
-                               num_dataloss = ((int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int((self.Read_dd_2() - self.Read_dd()).seconds / 60)+1 - len(db_data)))  )
+                               num_dataloss = self.Dataloss_Num()
+                               )
 
         """self.child = child_windows()#
         self.child = wingdows()
@@ -914,6 +914,10 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         str_datetime = str_datetime.replace(':', '_')
         return str_datetime
 
+    def Dataloss_Num(self, db_data):
+        return (((int(((self.Read_dd_2() - self.Read_dd()).days * 1440) / self.Read_combox_3()) + int(
+            (self.Read_dd_2() - self.Read_dd()).seconds / 60 / self.Read_combox_3()) + 1 - len(
+            db_data))))
 
     def Creat_Report(self):
         """
@@ -947,10 +951,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
 
         """生成需要写入报告的提示信息"""
         str_word = (
-            '                共检索' + str(len(results)) + '条数据,其中数据缺失' + str(((
-                        int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int(
-                    (self.Read_dd_2() - self.Read_dd()).seconds / 60) + 1 - len(
-                    db_data)))) + '条' + '                    ')
+            '                共检索' + str(len(results)) + '条数据,其中数据缺失' + str(self.Dataloss_Num(db_data)) + '条' + '                    ')
         """添加文字到docx"""
         doc.add_paragraph(str_word)
         doc.add_paragraph('时间：' + str((self.Read_dd())) + '  致  ' + str((self.Read_dd_2())))
@@ -995,8 +996,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
                              picture_qc,
                              picture_name,
                              num_data = str(len(results)),
-                             num_dataloss = ((int((self.Read_dd_2() - self.Read_dd()).days * 1440) + int((
-                                            self.Read_dd_2() - self.Read_dd()).seconds / 60) + 1 - len(db_data)))
+                             num_dataloss = self.Dataloss_Num(db_data)
                              )
             """把图片存入doc"""
             doc.add_picture(picture_name, width=Inches(6))
