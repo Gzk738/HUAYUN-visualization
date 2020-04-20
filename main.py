@@ -565,18 +565,18 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                      [0] * len(self.get_Missing_position(picture_data[i], qc_data[i])),
                      'o', label='数据丢失 ' + str(num_dataloss))
             """画qc = 8 缺测 """
-            plt.plot(self.get_measuring_position(picture_data[i], qc_data[i], miss),
-                     [0] * len(self.get_measuring_position(picture_data[i], qc_data[i], miss)), 'o',
+            plt.plot(self.get_position_x(picture_data[i], qc_data[i], miss),
+                     [0] * len(self.get_position_y(picture_data[i], qc_data[i], miss)), 'o',
                      label='缺测 ' + str(
-                         len(self.get_measuring_position(picture_data[i], qc_data[i], miss))))
+                         len(self.get_position_x(picture_data[i], qc_data[i], miss))))
             """qc = 1 存疑"""
             plt.plot(self.get_position_x(picture_data[i], qc_data[i], uncertain),
                      self.get_position_y(picture_data[i], qc_data[i], uncertain), 'o',
-                     label='存疑 ' + str(len(self.get_measuring_position(picture_data[i], qc_data[i], uncertain))))
+                     label='存疑 ' + str(len(self.get_position_x(picture_data[i], qc_data[i], uncertain))))
             """画qc == 2 错误"""
             plt.plot(self.get_position_x(picture_data[i], qc_data[i], error),
                      self.get_position_y(picture_data[i], qc_data[i], error), 'o',
-                     label='错误 ' + str(len(self.get_measuring_position(picture_data[i], qc_data[i], error))))
+                     label='错误 ' + str(len(self.get_position_x(picture_data[i], qc_data[i], error))))
 
             """
             输出窗口提示信息
@@ -589,9 +589,9 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
 
             doc.add_paragraph(self.Real_ele(str(config[checkbox_position[i]])) + '统计:')
             doc.add_paragraph('    数据丢失  ' + str(num_dataloss))
-            if len(self.get_measuring_position(picture_data[i], qc_data[i], miss)) != 0:
+            if len(self.get_position_x(picture_data[i], qc_data[i], miss)) != 0:
                 doc.add_paragraph(
-                    '    缺测  ' + str(len(self.get_measuring_position(picture_data[i], qc_data[i], miss))))
+                    '    缺测  ' + str(len(self.get_position_x(picture_data[i], qc_data[i], miss))))
             else:
                 doc.add_paragraph('    缺测  0')
             if len(self.get_position_x(picture_data[i], qc_data[i], uncertain)) != 0:
@@ -686,24 +686,13 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         :return: checkbox_state[2, 6, 45, 78, .............]
         """
         a = []
-        checkbox_position = list(enumerate(state))
-        for i in range(len(checkbox_position)):
-            if checkbox_position[i][1] == '0' and qc[i] == 'N':
-                a.append(checkbox_position[i][0])
+        data = list(enumerate(state))
+        for i in range(len(data)):
+            if float(data[i][1]) == 0 and qc[i] == 'N':
+                a.append(data[i][0])
         return a
 
-    def get_measuring_position(self, state, qc, miss):
-        """
-        用来存放checkbox的选择位置
-        :param checkbox_state:
-        :return: checkbox_state[2, 6, 45, 78, .............]
-        """
-        a = []
-        checkbox_position = list(enumerate(state))
-        for i in range(len(checkbox_position)):
-            if qc[i] == str(miss):
-                a.append(checkbox_position[i][0])
-        return a
+
 
 
     def get_position_x(self, state, qc, qc_para):
@@ -713,10 +702,10 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         :return: checkbox_state[2, 6, 45, 78, .............]
         """
         a = []
-        checkbox_position = list(enumerate(state))
-        for i in range(len(checkbox_position)):
+        data = list(enumerate(state))
+        for i in range(len(data)):
             if  qc[i] == str(qc_para):
-                a.append(checkbox_position[i][0])
+                a.append(data[i][0])
         return a
 
     def get_position_y(self, state, qc, qc_para):
@@ -726,10 +715,10 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         :return: checkbox_state[2, 6, 45, 78, .............]
         """
         a = []
-        checkbox_position = list(enumerate(state))
-        for i in range(len(checkbox_position)):
+        data = list(enumerate(state))
+        for i in range(len(data)):
             if  qc[i] == str(qc_para):
-                a.append(int(checkbox_position[i][1]))
+                a.append(int(data[i][1]))
         return a
 
 
