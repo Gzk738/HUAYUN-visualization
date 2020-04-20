@@ -833,27 +833,12 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
 
 
     def DB_Search(self):
-        global  g_Missing
-        global g_uncertainty
-        picture_date = []
-        picture_qc = []
+        """
+
+        :return:
+        """
         check_num = 0
-        Table_Name = self.lineEdit.text() + '_' + self.comboBox.currentText()+ '_' + self.lineEdit_2.text() + '_' + self.comboBox_2.currentText()
-        beg_time = self.Read_dd()
-        end_time = self.Read_dd_2()
-        mydb = pymysql.connect(
-            host="localhost",
-            user="root",
-            passwd="2667885",
-            database="wetherdate"
-        )
-        mycursor = mydb.cursor()
-        sql = "SELECT * FROM TABLE_NAME WHERE datetime >= '%s' and datetime <='%s'"%(beg_time, end_time)
-        sql = self.Table_to_sql(sql, Table_Name)
-        mycursor.execute(sql)
-        # fetchall() 获取所有记录
-        #Struct_date = self.Creat_Struct_date()
-        db_data = mycursor.fetchall()
+        db_data = self.Query_database()
         repare_data = self.Repair_result(db_data)
         results = self.Replace_result(repare_data)
 
@@ -886,13 +871,12 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
 
             picture_qc.append(tuple(eval('qc_' + str(loop_1))))
 
-        mycursor.close()
-        mydb.close()
+
         self.Printinfo_picture(checkbox_position ,
                                picture_date,
                                picture_qc,
                                num_data = str(len(results)),
-                               num_dataloss = self.Dataloss_Num()
+                               num_dataloss = self.Dataloss_Num(db_data)
                                )
 
         """self.child = child_windows()#
@@ -919,9 +903,9 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
             (self.Read_dd_2() - self.Read_dd()).seconds / 60 / self.Read_combox_3()) + 1 - len(
             db_data))))
 
-    def Creat_Report(self):
+    def Query_database(self):
         """
-        此函数为按钮生成报告的函数
+
         :return:
         """
         global g_Missing
@@ -943,9 +927,23 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         sql = "SELECT * FROM TABLE_NAME WHERE datetime >= '%s' and datetime <='%s'" % (beg_time, end_time)
         sql = self.Table_to_sql(sql, Table_Name)
         mycursor.execute(sql)
+        result = mycursor.fetchall()
         # fetchall() 获取所有记录
         # Struct_date = self.Creat_Struct_date()
-        db_data = mycursor.fetchall()
+        """关闭数据库"""
+        mycursor.close()
+        mydb.close()
+
+        return result
+
+    def Creat_Report(self):
+        """
+        此函数为按钮生成报告的函数
+        :return:
+        """
+        doc = Document()
+        check_num = 0
+        db_data = self.Query_database()
         repare_data = self.Repair_result(db_data)
         results = self.Replace_result(repare_data)
 
@@ -954,7 +952,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
             '                共检索' + str(len(results)) + '条数据,其中数据缺失' + str(self.Dataloss_Num(db_data)) + '条' + '                    ')
         """添加文字到docx"""
         doc.add_paragraph(str_word)
-        doc.add_paragraph('时间：' + str((self.Read_dd())) + '  致  ' + str((self.Read_dd_2())))
+        doc.add_paragraph('时间：' + str((self.Read_dd())) + '  至  ' + str((self.Read_dd_2())))
 
         """生成checkbox勾选的位置到列表"""
         checkbox_position = []
@@ -1000,9 +998,6 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
                              )
             """把图片存入doc"""
             doc.add_picture(picture_name, width=Inches(6))
-        """关闭数据库"""
-        mycursor.close()
-        mydb.close()
 
         """添加图, 设置宽度"""
         doc.save('报告\\' + self.lineEdit.text() +'站' + str(self.Name_datetime(str(self.Read_dd())))+'至' + str(self.Name_datetime(str(self.Read_dd_2())))+'报告'+'.docx')
