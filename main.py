@@ -17,16 +17,16 @@ import os, time, sys, re
 import matplotlib.pyplot as plt
 import pandas as pd
 import datetime
-import numpy as np
 import pymysql
 import globalvar as gl
-import cryptography
-import chinese as ch
-import matplotlib
 import os
 from docx import Document
 from docx.shared import Inches
 import importlib
+import sys, os
+if hasattr(sys, 'frozen'):
+    os.environ['PATH'] = sys._MEIPASS + ";" + os.environ['PATH']
+
 importlib.reload(sys)
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
@@ -400,6 +400,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             else:
                 self.textEdit.append('未找到文件，请放到根目录下')
 
+
     def abnormal_exist(self, qc_1, qc_miss, qc_8, qc_2):
         error = 1
         if len(qc_1) != 0:
@@ -424,6 +425,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         """重置画布"""
         plt.clf()
 
+        lost = 'N'
         error = 2
         miss = 8
         uncertain = 1
@@ -439,22 +441,22 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             list_data = [float(j) for j in picture_data[i]]
             plt.plot(list(list_data), '.', markersize=1.5, label= str((config[checkbox_position[i]])))
             """画数据丢失的点"""
-            plt.plot(self.get_Missing_position(picture_data[i], qc_data[i]),
-                     [0] * len(self.get_Missing_position(picture_data[i], qc_data[i])),
+            plt.plot(self.get_position_x(picture_data[i], qc_data[i], lost),
+                     self.get_position_y(picture_data[i], qc_data[i], lost),
                      'o', label='数据丢失 ' + str(num_dataloss))
             """画qc = 8 缺测 """
-            plt.plot(self.get_measuring_position(picture_data[i], qc_data[i], miss),
-                     [0] * len(self.get_measuring_position(picture_data[i], qc_data[i], miss)), 'o',
+            plt.plot(self.get_position_x(picture_data[i], qc_data[i], miss),
+                     [0] * len(self.get_position_y(picture_data[i], qc_data[i], miss)), 'o',
                      label='缺测 ' + str(
-                         len(self.get_measuring_position(picture_data[i], qc_data[i], miss))))
+                         len(self.get_position_x(picture_data[i], qc_data[i], miss))))
             """qc = 1 存疑"""
             plt.plot(self.get_position_x(picture_data[i], qc_data[i], uncertain),
                      self.get_position_y(picture_data[i], qc_data[i], uncertain), 'o',
-                     label='存疑 '+str(len(self.get_measuring_position(picture_data[i], qc_data[i], uncertain))))
+                     label='存疑 '+str(len(self.get_position_x(picture_data[i], qc_data[i], uncertain))))
             """画qc == 2 错误"""
             plt.plot(self.get_position_x(picture_data[i], qc_data[i], error),
                      self.get_position_y(picture_data[i], qc_data[i], error), 'o',
-                     label='错误 '+str(len(self.get_measuring_position(picture_data[i], qc_data[i], error))))
+                     label='错误 '+str(len(self.get_position_x(picture_data[i], qc_data[i], error))))
 
             """
             输出窗口提示信息
@@ -466,9 +468,9 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                                    self.get_position_x(picture_data[i], qc_data[i], error)) == 1:"""
 
             self.textEdit_2.append(str(config[checkbox_position[i]]) + '质控统计:')
-            if len(self.get_measuring_position(picture_data[i], qc_data[i], miss)) != 0:
+            if len(self.get_position_x(picture_data[i], qc_data[i], miss)) != 0:
                 self.textEdit_2.append(
-                    '    缺测  ' +str(len(self.get_measuring_position(picture_data[i], qc_data[i], miss))) )
+                    '    缺测  ' +str(len(self.get_position_x(picture_data[i], qc_data[i], miss))) )
             else :
                 self.textEdit_2.append('    缺测  0')
             if len(self.get_position_x(picture_data[i], qc_data[i], uncertain)) != 0:
@@ -816,67 +818,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         return replaced_result
 
 
-    def DB_Search(self):
-        """
 
-        :return:
-        """
-        check_num = 0
-        db_data = self.Query_database()
-        repare_data = self.Repair_result(db_data)
-        results = self.Replace_result(repare_data)
-
-        #窗口提示信息
-        self.textEdit_2.append(
-            '++++++++++++++++共检索' + str(len(results)) + '条数据,其中数据缺失'+ str(self.Dataloss_Num(db_data)) + '条' +'++++++++++++++++++++++++')
-
-        """获得checkbox页面的勾选的原始状态"""
-        checkbox_state = self.Chackbox()
-        """提取checkbox勾选的位置到列表"""
-        checkbox_position = self.get_Checkstatus_position(checkbox_state)
-
-        for loop in range(len(checkbox_state)):
-            if checkbox_state[loop] == 1:
-                check_num = check_num + 1
-        picture_date = []
-        picture_qc = []
-
-        for loop_1 in range(check_num):
-
-            data = self.Read_specif_ele(results, loop_1, checkbox_position)
-            exec('list_'+str(loop_1)+'='+str(data))
-            qc_data = self.Read_specif_qc(results, loop_1, checkbox_position)
-            exec('qc_' + str(loop_1) + '=' + str(qc_data))
-            #print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
-            """self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))"""
-            """self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))"""
-
-            picture_date.append(tuple(eval('list_' + str(loop_1))))
-
-            picture_qc.append(tuple(eval('qc_' + str(loop_1))))
-
-
-        self.Printinfo_picture(checkbox_position ,
-                               picture_date,
-                               picture_qc,
-                               num_data = str(len(results)),
-                               num_dataloss = self.Dataloss_Num(db_data)
-                               )
-
-        """self.child = child_windows()#
-        self.child = wingdows()
-        self.child.show()"""
-
-        """
-        Missing_num = 
-        x = range(100)
-        y = np.sin(x)
-        t = np.cos(x)
-        plt.plot(x, y, ls="-", lw=2, label="plot figure")
-        plt.plot(x, t, label="t")
-        plt.show()
-        
-        """
     def Name_datetime(self, str_datetime):
         str_datetime = str_datetime.replace(' ', '_')
         str_datetime = str_datetime.replace(':', '_')
@@ -920,6 +862,66 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
 
         return result
 
+    def DB_Search(self):
+        """
+
+        :return:
+        """
+        check_num = 0
+        db_data = self.Query_database()
+        repare_data = self.Repair_result(db_data)
+        results = self.Replace_result(repare_data)
+
+        # 窗口提示信息
+        self.textEdit_2.append(
+            '++++++++++++++++共检索' + str(len(results)) + '条数据,其中数据缺失' + str(
+                self.Dataloss_Num(db_data)) + '条' + '++++++++++++++++++++++++')
+
+        """获得checkbox页面的勾选的原始状态"""
+        checkbox_state = self.Chackbox()
+        """提取checkbox勾选的位置到列表"""
+        checkbox_position = self.get_Checkstatus_position(checkbox_state)
+
+        for loop in range(len(checkbox_state)):
+            if checkbox_state[loop] == 1:
+                check_num = check_num + 1
+        picture_date = []
+        picture_qc = []
+
+        for loop_1 in range(check_num):
+            data = self.Read_specif_ele(results, loop_1, checkbox_position)
+            exec('list_' + str(loop_1) + '=' + str(data))
+            qc_data = self.Read_specif_qc(results, loop_1, checkbox_position)
+            exec('qc_' + str(loop_1) + '=' + str(qc_data))
+            # print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
+            """self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))"""
+            """self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))"""
+
+            picture_date.append(tuple(eval('list_' + str(loop_1))))
+
+            picture_qc.append(tuple(eval('qc_' + str(loop_1))))
+
+        self.Printinfo_picture(checkbox_position,
+                               picture_date,
+                               picture_qc,
+                               num_data=str(len(results)),
+                               num_dataloss=self.Dataloss_Num(db_data)
+                               )
+
+        """self.child = child_windows()#
+        self.child = wingdows()
+        self.child.show()"""
+
+        """
+        Missing_num = 
+        x = range(100)
+        y = np.sin(x)
+        t = np.cos(x)
+        plt.plot(x, y, ls="-", lw=2, label="plot figure")
+        plt.plot(x, t, label="t")
+        plt.show()
+
+        """
     def Creat_Report(self):
         """
         此函数为按钮生成报告的函数
