@@ -867,46 +867,51 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
 
         :return:
         """
-        check_num = 0
-        db_data = self.Query_database()
-        repare_data = self.Repair_result(db_data)
-        results = self.Replace_result(repare_data)
+        try:
+            check_num = 0
+            db_data = self.Query_database()
+            repare_data = self.Repair_result(db_data)
+            results = self.Replace_result(repare_data)
 
-        # 窗口提示信息
-        self.textEdit_2.append(
-            '++++++++++++++++共检索' + str(len(results)) + '条数据,其中数据缺失' + str(
-                self.Dataloss_Num(db_data)) + '条' + '++++++++++++++++++++++++')
+            # 窗口提示信息
+            self.textEdit_2.append(
+                '++++++++++++++++共检索' + str(len(results)) + '条数据,其中数据缺失' + str(
+                    self.Dataloss_Num(db_data)) + '条' + '++++++++++++++++++++++++')
 
-        """获得checkbox页面的勾选的原始状态"""
-        checkbox_state = self.Chackbox()
-        """提取checkbox勾选的位置到列表"""
-        checkbox_position = self.get_Checkstatus_position(checkbox_state)
+            """获得checkbox页面的勾选的原始状态"""
+            checkbox_state = self.Chackbox()
+            """提取checkbox勾选的位置到列表"""
+            checkbox_position = self.get_Checkstatus_position(checkbox_state)
 
-        for loop in range(len(checkbox_state)):
-            if checkbox_state[loop] == 1:
-                check_num = check_num + 1
-        picture_date = []
-        picture_qc = []
+            for loop in range(len(checkbox_state)):
+                if checkbox_state[loop] == 1:
+                    check_num = check_num + 1
+            picture_date = []
+            picture_qc = []
 
-        for loop_1 in range(check_num):
-            data = self.Read_specif_ele(results, loop_1, checkbox_position)
-            exec('list_' + str(loop_1) + '=' + str(data))
-            qc_data = self.Read_specif_qc(results, loop_1, checkbox_position)
-            exec('qc_' + str(loop_1) + '=' + str(qc_data))
-            # print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
-            """self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))"""
-            """self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))"""
+            for loop_1 in range(check_num):
+                data = self.Read_specif_ele(results, loop_1, checkbox_position)
+                exec('list_' + str(loop_1) + '=' + str(data))
+                qc_data = self.Read_specif_qc(results, loop_1, checkbox_position)
+                exec('qc_' + str(loop_1) + '=' + str(qc_data))
+                # print('list_' + str(loop_1) + ':', eval('list_' + str(loop_1)))
+                """self.textEdit_2.append(str('list_' + str(loop_1) + ':') + str(eval('list_' + str(loop_1))))"""
+                """self.textEdit_2.append(str('qc_' + str(loop_1) + ':') + str(eval('qc_' + str(loop_1))))"""
 
-            picture_date.append(tuple(eval('list_' + str(loop_1))))
+                picture_date.append(tuple(eval('list_' + str(loop_1))))
 
-            picture_qc.append(tuple(eval('qc_' + str(loop_1))))
+                picture_qc.append(tuple(eval('qc_' + str(loop_1))))
 
-        self.Printinfo_picture(checkbox_position,
-                               picture_date,
-                               picture_qc,
-                               num_data=str(len(results)),
-                               num_dataloss=self.Dataloss_Num(db_data)
-                               )
+            self.Printinfo_picture(checkbox_position,
+                                   picture_date,
+                                   picture_qc,
+                                   num_data=str(len(results)),
+                                   num_dataloss=self.Dataloss_Num(db_data)
+                                   )
+
+        except:
+            self.textEdit_2.append('数据库读取失败，请确认数据库处于开启状态')
+
 
         """self.child = child_windows()#
         self.child = wingdows()
@@ -994,7 +999,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
             self.child.show()
 
         except:
-            self.textEdit_2.append('请检查区站号，数据库未找到此区站号的数据')
+            self.textEdit_2.append('请检查区站号，数据库未找到此区站号的数据或数据库未开启')
 
 if __name__ == "__main__":
 
