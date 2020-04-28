@@ -24,8 +24,6 @@ from docx import Document
 from docx.shared import Inches
 import importlib
 import sys, os
-import chardet
-import codecs
 if hasattr(sys, 'frozen'):
     os.environ['PATH'] = sys._MEIPASS + ";" + os.environ['PATH']
 
@@ -347,18 +345,6 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
             self.textEdit_2.append('ERROR' + str(flog))
             print('ERROR'+str(flog))
 
-    def change_format(self, filename):
-        # !!! does not backup the origin file
-        content = codecs.open(filename, 'rb').read()
-        source_encoding = chardet.detect(content)['encoding']
-        if source_encoding == None:
-            print("encoding is None: %s" % filename)
-            return
-        print("[%s]--->[%s]: %s" % (filename, source_encoding, 'utf-8'))
-        if source_encoding != 'utf-8':
-            content = content.decode(source_encoding, 'ignore').encode("utf-8")
-            codecs.open(filename, 'w', encoding='utf-8').write(content)
-
     def Save_datebase(self):
         """
         This is the trigger function of the button (stored in the database) on the interface
@@ -378,10 +364,6 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
         line_num = 0
         End_identification = 0
         file_name = self.lineEdit_3.text()
-
-        """修改文件编码格式，该功能暂时有错误"""
-        #self.change_format(file_name)
-
         dd = self.Handle_datetime(self.dateTimeEdit.text())
         dd_2 = self.Handle_datetime(self.dateTimeEdit_2.text())
         if len(self.lineEdit.text()) == 0 or len(self.lineEdit_2.text()) == 0:
