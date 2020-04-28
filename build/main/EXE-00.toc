@@ -1,5 +1,4 @@
-('D:\\software\\PyCharm Community Edition '
- '2019.3.3\\project\\li_ping5.1\\build\\main\\main.exe',
+('D:\\software\\GIT\\project\\HUAYUN-visualization\\build\\main\\main.exe',
  False,
  False,
  True,
@@ -11,8 +10,7 @@
  True,
  'main.pkg',
  [('PYZ-00.pyz',
-   'D:\\software\\PyCharm Community Edition '
-   '2019.3.3\\project\\li_ping5.1\\build\\main\\PYZ-00.pyz',
+   'D:\\software\\GIT\\project\\HUAYUN-visualization\\build\\main\\PYZ-00.pyz',
    'PYZ'),
   ('struct', 'd:\\software\\python\\lib\\struct.pyo', 'PYMODULE'),
   ('pyimod01_os_path',
@@ -49,17 +47,15 @@
    'd:\\software\\python\\lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_mpldata.py',
    'PYSOURCE'),
   ('main',
-   'D:\\software\\PyCharm Community Edition '
-   '2019.3.3\\project\\li_ping5.1\\main.py',
+   'D:\\software\\GIT\\project\\HUAYUN-visualization\\main.py',
    'PYSOURCE'),
   ('main.exe.manifest',
-   'D:\\software\\PyCharm Community Edition '
-   '2019.3.3\\project\\li_ping5.1\\build\\main\\main.exe.manifest',
+   'D:\\software\\GIT\\project\\HUAYUN-visualization\\build\\main\\main.exe.manifest',
    'BINARY')],
  [],
  False,
  False,
- 1587455436,
+ 1588063582,
  [('runw.exe',
    'd:\\software\\python\\lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit\\runw.exe',
    'EXECUTABLE')])

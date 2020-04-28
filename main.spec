@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['D:\\software\\PyCharm Community Edition 2019.3.3\\project\\li_ping5.1'],
+             pathex=['D:\\software\\GIT\\project\\HUAYUN-visualization'],
              binaries=[],
              datas=[],
              hiddenimports=[],
