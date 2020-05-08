@@ -971,7 +971,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
             checkbox_position.append([0])
             checkbox_position.append([2,3,4,5,6])
             checkbox_position.append([7])
-            checkbox_position.append([9,10])
+            checkbox_position.append([19,20])
             checkbox_position.append([29])
             checkbox_position.append([30])
             checkbox_position.append([32])
