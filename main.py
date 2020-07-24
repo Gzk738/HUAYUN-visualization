@@ -405,7 +405,7 @@ class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建�
                         if len(str_line) >= 11:
                             if self.Str_Compare(str_line):
                                 """dd_jure = self.Handle_dd_jure(str_line)"""
-                                if ((self.StatNum_check(str_line, line_num) and (self.DI_check(str_line, line_num)) and self.ID_ckeck(str_line, line_num)) and (self.frame_check(str_line, line_num))):
+                                if ( (self.DI_check(str_line, line_num)) and self.ID_ckeck(str_line, line_num)) and (self.frame_check(str_line, line_num)):
                                     self.save_SQL_asline(line, str_line, mycursor, conn)
 
                             else:
