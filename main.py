@@ -68,6 +68,23 @@ def App__RUN__():
     window.show()
     sys.exit(app.exec_())
 
+class htime():
+    def __init__(self):
+        self.haha = 0
+    def theyear(self):
+        return datetime.datetime.now().year
+    def themouth(self):
+        return datetime.datetime.now().month
+    def theday(self):
+        return datetime.datetime.now().day
+    def thehour(self):
+        return datetime.datetime.now().hour
+    def themin(self):
+        return datetime.datetime.now().min
+    def thesec(self):
+        return datetime.datetime.now().sec
+
+
 class child_windows(QDialog, Ui_Dialog):
     def __init__(self):
         super(child_windows, self).__init__()
@@ -78,10 +95,16 @@ class child_windows(QDialog, Ui_Dialog):
         os.system("start explorer D:\software\PyCharm Community Edition 2019.3.3\project\li_ping5.1\报告")  # c:为要打开c盘
 
 
-class Main_windows(QMainWindow, Ui_MainWindow):  # 如果你是用Widget创建的窗口，这里会不同
+
+class Main_windows(QMainWindow, Ui_MainWindow, htime):  # 如果你是用Widget创建的窗口，这里会不同
     def __init__(self):
         super(Main_windows, self).__init__()
         self.setupUi(self)
+        self.dateTimeEdit_2.setDateTime(QtCore.QDateTime(QtCore.QDate(htime.theyear(self), htime.themouth(self), htime.theday(self)),
+                                                         QtCore.QTime(8, 0, 0)))
+        self.dateTimeEdit.setDateTime(QtCore.QDateTime(QtCore.QDate(htime.theyear(self), htime.themouth(self), htime.theday(self)),
+                                                         QtCore.QTime(8, 0, 0)))
+
         self.pushButton_2.clicked.connect(self.Save_datebase)
         self.pushButton_3.clicked.connect(self.DB_Search)
         self.pushButton_4.clicked.connect(self.Creat_Report)
