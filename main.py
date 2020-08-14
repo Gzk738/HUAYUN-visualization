@@ -1040,7 +1040,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
             self.child.show()
 
         except:
-            self.textEdit_2.append('请检查区站号，数据库未找到此区站号的数据或数据库未开启')
+            self.textEdit_2.append('请检查区站号，数据库未找到此区站号的数据或数据库未开启.......或者你Word没关')
 
 if __name__ == "__main__":
 
