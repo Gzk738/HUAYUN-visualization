@@ -779,8 +779,23 @@ class Main_windows(QMainWindow, Ui_MainWindow, htime):  # 如果你是用Widget�
             qc.append((str_line[(len(config))*2][checkbox_position[loop_1]]))
         return qc
 
+
+    def Integerdta(self,db_data):
+        data = []
+        leng = len(db_data)
+        db_data = list(db_data)
+        inter = self.Read_inter()
+        for row in range(leng):
+            if db_data[row][1].minute % inter== 0:
+                data.append(db_data[row])
+            else:
+                pass
+
+        return data
+
     def Repair_result(self, result):
         i = 0
+        j = 0
         results = []
         #delta = timedelta(minutes = 1)
         dd = self.Read_dd()
@@ -789,16 +804,22 @@ class Main_windows(QMainWindow, Ui_MainWindow, htime):  # 如果你是用Widget�
 
         while dd <= dd_2:
             if i < len(result):
-                if result [i][1] == dd:
-                    results.append(result [i])
+                if result [j][1] == dd:
+                    results.append(result [j])
+                    j = j + 1
                     i = i + 1
                 else:
-                    results.append(('id',dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,0,datetime,001,043,03,AAA,\
+                    if dd < result [i][1]:
+                        i = i + 1
+                        results.append(('id',dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,0,datetime,001,043,03,AAA,\
 0,AAA5i,0,AB10,0,AB20,0,AB30,0,AB40,0,AB50,0,ADA,0,ADB,0,AEA,0,AEA150,0,AEB,0,\
 AEB150,0,AEC,0,AEC150,0,AED,0,AED150,0,AEF,0,AEF150,0,AFA,0,AFA150,0,AFA150a,0,AFAa,\
 0,AFB,0,AFB150,0,AFC,0,AFC150,0,AFD,0,AFD150,0,AGA,0,AHA,0,AHA5,00,AHC,0,AHC5,00,\
 AJA,0,AJAa,0,AJAc,0,AJT,201911051005,ARG10,0,ARG20,0,ARG30,0,ARG40,0,ARG50,0,\
 NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
+                    elif dd > result [i][1]:
+                        i = i + 1
+                                       
             else:
                 results.append(('id', dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,0,datetime,001,043,03,AAA,\
 0,AAA5i,0,AB10,0,AB20,0,AB30,0,AB40,0,AB50,0,ADA,0,ADB,0,AEA,0,AEA150,0,AEB,0,\
@@ -809,23 +830,9 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))
 
             dd = dd + datetime.timedelta(minutes = self.Read_inter())
 
-        """if result[len(result)-1][1] != dd_2:
-            results.append(('id',dd,'id',dd, 'BG,001,57495,394827,1162815,00444,14,YIIP,0,datetime,001,043,03,AAA,\
-0,AAA5i,0,AB10,0,AB20,0,AB30,0,AB40,0,AB50,0,ADA,0,ADB,0,AEA,0,AEA150,0,AEB,0,\
-AEB150,0,AEC,0,AEC150,0,AED,0,AED150,0,AEF,0,AEF150,0,AFA,0,AFA150,0,AFA150a,0,AFAa,\
-0,AFB,0,AFB150,0,AFC,0,AFC150,0,AFD,0,AFD150,0,AGA,0,AHA,0,AHA5,00,AHC,0,AHC5,00,\
-AJA,0,AJAa,0,AJAc,0,AJT,201911051005,ARG10,0,ARG20,0,ARG30,0,ARG40,0,ARG50,0,\
-NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
-
         return results
 
-        """
-        while i < len(results) - 1 and len(results) > 1:
-            Time_apart = (results[i+1][1] - results[i][1])
-            if (results[i+1][1] - results[i][1]) != timedelta(minutes = 1):
-                for loop in range(int((results[i+1][1] - results[i][1]).seconds/60)-1):
-                    results[i+1:i+1] = [0,0,0]
-                    i = i+1"""
+
 
         return tuple(results)
 
@@ -866,9 +873,10 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         return str_datetime
 
     def Dataloss_Num(self, db_data):
-        return (((int(((self.Read_dd_2() - self.Read_dd()).days * 1440) / self.Read_combox_3()) + int(
+        a = (((int(((self.Read_dd_2() - self.Read_dd()).days * 1440) / self.Read_combox_3()) + int(
             (self.Read_dd_2() - self.Read_dd()).seconds / 60 / self.Read_combox_3()) + 1 - len(
             db_data))))
+        return a
 
     def Query_database(self):
         """
@@ -911,7 +919,9 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         try:
             check_num = 0
             db_data = self.Query_database()
-            repare_data = self.Repair_result(db_data)
+            #删除和检索间隔不成整数倍的数据
+            temp = self.Integerdta(db_data)
+            repare_data = self.Repair_result(temp)
             results = self.Replace_result(repare_data)
 
             # 窗口提示信息
@@ -923,6 +933,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
             checkbox_state = self.Chackbox()
             """提取checkbox勾选的位置到列表"""
             checkbox_position = self.get_Checkstatus_position(checkbox_state)
+
 
             for loop in range(len(checkbox_state)):
                 if checkbox_state[loop] == 1:
@@ -978,7 +989,12 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
         try:
             db_data = self.Query_database()
 
-            repare_data = self.Repair_result(db_data)
+            #删除和检索间隔不成整数倍的数据
+            temp = self.Integerdta(db_data)
+
+            #把缺测的数据补成0
+            repare_data = self.Repair_result(temp)
+            #把///补成0
             results = self.Replace_result(repare_data)
 
             """生成需要写入报告的提示信息"""
