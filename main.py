@@ -943,7 +943,7 @@ NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN,z,1,rL,1,xA,7,9748,ED'))"""
 
                 picture_qc.append(tuple(eval('qc_' + str(loop_1))))
 
-            self.Printinfo_picture(checkbox_position,
+            self.Printinfo_picture(checkbox_position,   
                                    picture_date,
                                    picture_qc,
                                    num_data=str(len(results)),
